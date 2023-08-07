@@ -1,0 +1,27 @@
+version: '3.5'
+
+services:
+  backend:
+    depends_on:
+      - frontend
+    container_name: ${COMPOSE_PROJECT_NAME}-backend
+    build:
+      dockerfile: ./backend/Dockerfile_backend
+    hostname: backend
+    image: lsag:${COMPOSE_PROJECT_NAME}-backend
+    restart: on-failure
+    volumes:
+      - ./frontend/dist:/usr/src/app/dist
+    ports:
+      - 3000:3000
+    expose:
+      - "3000"
+
+  frontend:
+    container_name: ${COMPOSE_PROJECT_NAME}-frontend
+    hostname: frontend
+    image: lsag:${COMPOSE_PROJECT_NAME}-frontend
+    volumes:
+      - ./frontend/dist:/usr/src/app/dist
+    build:
+      dockerfile: ./frontend/Dockerfile_frontend

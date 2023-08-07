@@ -1,0 +1,56 @@
+.file-uploader {
+    &__header {
+        padding: var(--border-radius);
+
+        .grid {
+            .col {
+                padding: 0;
+                padding-left: var(--border-radius);
+                padding-top: var(--border-radius);
+            }
+        }
+    }
+    &__divider {
+        height: 3px !important;
+        margin-bottom: 3px !important;
+    }
+    &__body {
+        padding: var(--border-radius);
+
+        &__empty {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-color);
+            text-align: center;
+
+            &__icon {
+                height: 100px;
+                width: 100px;
+                border-radius: 50%;
+                background-color: var(--surface-ground);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                
+                &i::after {
+                    font-size: 80px !important;
+                }
+            }
+
+            &__text {
+                margin-top: 20px;
+                font-size: 1.2rem;
+                color: var(--text-color-secondary);
+            }
+
+            .p-speeddial-item::after {
+                background-color: var(--surface-ground) !important;
+                color: var(--text-color) !important;
+            }
+        }
+    }
+}

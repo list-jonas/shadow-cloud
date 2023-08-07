@@ -1,0 +1,27 @@
+# Use specific version of node
+FROM node:18.17.0-alpine3.18 
+
+# Create app directory
+RUN mkdir -p /usr/src/app
+
+# Set work directory
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json
+COPY ./frontend/package*.json /usr/src/app/
+
+# Install typescript and node modules
+RUN npm install typescript -g 
+RUN npm install
+
+# Copy the entire frontend directory
+COPY ./frontend/ /usr/src/app
+
+# Set environment variable
+ENV VITE_REACT_APP_BASE_URL=https://lsag-financial-pangea.lsag.net
+
+# Build the app
+# RUN npm run build
+
+
+CMD [ "npm", "run", "build" ]

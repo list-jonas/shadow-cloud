@@ -1,0 +1,242 @@
+@import 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100';
+
+.mat-icon-back::before {
+  content: "arrow_back_ios";
+  margin-left: 7px;
+}
+
+.mat-icon-dashboard::before {
+  content: "dashboard";
+}
+
+.mat-icon-monitoring::before {
+  content: "show_chart";
+}
+
+.mat-icon-local::before {
+  content: "south_america";
+}
+
+.mat-icon-global::before {
+  content: "public";
+}
+
+.mat-icon-quary-stats::before {
+  content: "query_stats";
+}
+
+.mat-icon-settings::before {
+  content: "settings";
+}
+
+.mat-icon-help::before {
+  content: "support";
+}
+
+.mat-icon-logout::before {
+  content: "logout";
+}
+
+.mat-icon-tag::before {
+  content: "label";
+}
+
+.mat-icon-boot::before {
+  content: "label";
+}
+
+.mat-icon-market-trends::before {
+  content: "trending_up";
+}
+
+.mat-icon-consumer-trends::before {
+  content: "people_alt";
+}
+
+.mat-icon-account::before {
+  content: "account_circle";
+}
+
+.mat-icon-app-settings::before {
+  content: "apps";
+}
+
+.mat-icon-cathedral::before {
+  content: "architecture";
+}
+
+.mat-icon-station::before {
+  content: "directions_subway";
+}
+
+.mat-icon-park::before {
+  content: "nature";
+}
+
+.mat-icon-mall::before {
+  content: "store_mall_directory";
+}
+
+.mat-icon-water::before {
+  content: "waves";
+}
+
+.mat-icon-industrial::before {
+  content: "business";
+}
+
+.mat-icon-school::before {
+  content: "school";
+}
+
+.mat-icon-hospital::before {
+  content: "local_hospital";
+}
+
+.mat-icon-university::before {
+  content: "school";
+}
+
+.mat-icon-museum::before {
+  content: "museum";
+}
+
+.mat-icon-cafe::before {
+  content: "local_cafe";
+}
+
+.mat-icon-pub::before {
+  content: "local_drink";
+}
+
+.mat-icon-restaurant::before {
+  content: "restaurant";
+}
+
+.mat-icon-supermarket::before {
+  content: "local_grocery_store";
+}
+
+.mat-icon-library::before {
+  content: "library_books";
+}
+
+.mat-icon-theatre::before {
+  content: "theaters";
+}
+
+.mat-icon-bus_stop::before {
+  content: "directions_bus";
+}
+
+.mat-icon-cinema::before {
+  content: "movie";
+}
+
+.mat-icon-bank::before {
+  content: "account_balance";
+}
+
+.mat-icon-pharmacy::before {
+  content: "local_pharmacy";
+}
+
+.mat-icon-bakery::before {
+  content: "cake";
+}
+
+.mat-icon-fitness_centre::before {
+  content: "fitness_center";
+}
+
+.mat-icon-hotel::before {
+  content: "hotel";
+}
+
+.mat-icon-artwork::before {
+  content: "brush";
+}
+
+.mat-icon-zoo::before {
+  content: "pets";
+}
+
+.mat-icon-gym::before {
+  content: "fitness_center";
+}
+
+.mat-icon-refresh::before {
+  content: "refresh";
+}
+
+.mat-icon-download::before {
+  content: "download";
+}
+
+.mat-icon-zoom-in::before {
+  content: "zoom_in";
+}
+
+.mat-icon-zoom-out::before {
+  content: "zoom_out";
+}
+
+.mat-icon-recenter::before {
+  content: "center_focus_strong";
+}
+
+.mat-icon-map::before {
+  content: "map";
+}
+
+.mat-icon-close::before {
+  content: "close";
+}
+
+.mat-icon-calendar::before {
+  content: "calendar_month";
+}
+
+.mat-icon-admin::before {
+  content: "shield_person";
+}
+
+.mat-icon-forward::before {
+  content: "arrow_forward_ios";
+}
+
+.mat-icon-users::before {
+  content: "group";
+}
+
+.mat-icon-log::before {
+  content: "format_align_left";
+}
+
+.mat-icon-plus::before {
+  content: "add";
+}
+
+.mat-icon-login::before {
+  content: "login";
+}
+
+.mat-icon-upload::before {
+  content: "cloud_upload";
+}
+
+.mat-icon-document-drop::before {
+  content: "file_open";
+}
+
+.mat-icon-document::before {
+  content: "description";
+}
+
+.mat-icon-folder::before {
+  content: "folder";
+}
+
+.mat-icon-delete::before {
+  content: "delete";
+}

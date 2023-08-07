@@ -1,0 +1,25 @@
+{
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc && vite build",
+		"lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"@types/react": "^18.2.18",
+		"@types/react-dom": "^18.2.7",
+		"@vitejs/plugin-react": "^4.0.4",
+		"axios": "^1.4.0",
+		"fs": "0.0.1-security",
+		"jszip": "^3.10.1",
+		"path": "^0.12.7",
+		"primeflex": "^3.3.1",
+		"primereact": "^9.6.1",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"react-router-dom": "^6.14.2",
+		"sass": "^1.64.2",
+		"typescript": "^5.1.6",
+		"vite": "^4.4.8"
+	}
+}
