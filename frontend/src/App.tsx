@@ -8,12 +8,13 @@ import '/src/assets/theme/mat-icon.css'
 import themesData from "./data/themeData";
 import PrimeReact, { PrimeReactProvider } from "primereact/api";
 import React from "react";
+import FileView from "./pages/file/FileView";
 
 const Dashboard = React.lazy(() => import("./pages/dashboard/dashboard/Dashboard"));
 const NoPage = React.lazy(() => import("./pages/noPage/NoPage"));
 const Login = React.lazy(() => import("./pages/auth/login/Login"));
 const Settings = React.lazy(() => import("./pages/dashboard/settings/Settings"));
-const AdminUsers = React.lazy(() => import("./pages/dashboard/admin/user/AdminUsers"));
+const AdminUsers = React.lazy(() => import("./pages/dashboard/admin/users/AdminUsers"));
 const AdminStats = React.lazy(() => import("./pages/dashboard/admin/stats/AdminStats"));
 
 function App() {
@@ -55,6 +56,8 @@ function App() {
             <Route path="/auth">
               <Route path="/auth/login" element={<Login />} />
             </Route>
+
+            <Route path="/file/:user/:id" element={<FileView />} />
 
             <Route path="*" element={<NoPage />} />
           </Routes>

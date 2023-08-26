@@ -7,12 +7,13 @@
                 padding: 0;
                 padding-left: var(--border-radius);
                 padding-top: var(--border-radius);
+                padding-right: var(--border-radius);
             }
         }
     }
     &__divider {
         height: 3px !important;
-        margin-bottom: 3px !important;
+        margin-bottom: 8px !important;
     }
     &__body {
         padding: var(--border-radius);
@@ -45,11 +46,6 @@
                 margin-top: 20px;
                 font-size: 1.2rem;
                 color: var(--text-color-secondary);
-            }
-
-            .p-speeddial-item::after {
-                background-color: var(--surface-ground) !important;
-                color: var(--text-color) !important;
             }
         }
     }

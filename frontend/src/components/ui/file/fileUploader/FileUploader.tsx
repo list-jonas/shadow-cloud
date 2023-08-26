@@ -4,22 +4,23 @@ import { ProgressBar } from 'primereact/progressbar';
 import { Button } from 'primereact/button';
 import JSZip from 'jszip'
 import './FileUploader.scss'
-import { Badge } from 'primereact/badge';
-import formatFileSize from '../../../../helper/formatFileSize';
-import { SplitButton } from 'primereact/splitbutton';
-import { SpeedDial } from 'primereact/speeddial';
-import FileTable from './FileTable';
+import FileTable, { FileTableState } from './FileTable';
 import axios from 'axios';
 import apiRoutes from '../../../../routes/apiRoutes';
+import { InputText } from 'primereact/inputtext';
+import routesData from '../../../../data/routesData';
 
 const FileUploader = () => {
   const { showInfo, showError, showWarn } = useToast();
   const [totalSize, setTotalSize] = useState(0);
+  const [name , setName] = useState<string>('');
   const [files, setFiles] = useState<File[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [progress, setProgress] = useState(0);
   const [processing, setProcessing] = useState(false);
   const fileSelectRef = useRef<any>(null);
   const folderSelectRef = useRef<any>(null);
+  const [downloadUrl, setDownloadUrl] = useState<string>('');
 
   const processFiles = (_files: File[]) => {
     let _validFiles: File[] = [];
@@ -57,6 +58,19 @@ const FileUploader = () => {
   const onDrop = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
+    // If file is empty, return
+    if (e.dataTransfer.files.length === 0) {
+      showError('Error', 'File is empty');
+      return;
+    };
+
+    // If a file has 0 size, return
+    if (e.dataTransfer.files[0].size === 0) {
+      showError('Error', 'File size should be greater than 0');
+      return;
+    };
+
+
     let _files = [...e.dataTransfer.files];
     processFiles(_files);
   };
@@ -119,8 +133,17 @@ const FileUploader = () => {
   };
 
   const onClear = () => {
-    setFiles([]);
-    setTotalSize(0);
+    // remove selectted files from files array and update total size
+    // if nothing selected remove all files
+    if (selectedFiles.length > 0) {
+      setFiles(files.filter((file) => !selectedFiles.includes(file)));
+      setSelectedFiles([]);
+      setTotalSize(files.reduce((acc, file) => acc + file.size, 0));
+    } else {
+      setFiles([]);
+      setTotalSize(0);
+    }
+    
     setProgress(0);
     setProcessing(false);
   };
@@ -134,6 +157,7 @@ const FileUploader = () => {
     for (let i = 0; i < files.length; i++) {
       formData.append('files[]', files[i]);
     }
+    formData.append('name', name);
 
     axios.post(apiRoutes.postUpload, formData, {
       withCredentials: true,
@@ -141,36 +165,46 @@ const FileUploader = () => {
         _progress = Math.round((progressEvent.loaded * 100) / (progressEvent.total ?? 100));
         setProgress(_progress);
       }
-    }).then(() => {
+    }).then((response) => {
       setProgress(100);
-      showInfo('Success', 'Files uploaded successfully');
-    }).catch((err) => {
-      showError('Error', err.message);
+      showInfo('Success', response.data.message);
+      setDownloadUrl(`${routesData.baseUrl()}/file/${response.data.location}`);
+      
+    }).catch((error: any) => {
+      if (error.request.data && error.request.data?.error) {
+        showError('Error', error.request.data.error);
+      } else {
+        showError('Error', error.message);
+      }
       setProgress(0);
     });
   };
 
   return (
     <div className="file-uploader border">
+      <div>
+        {downloadUrl}
+      </div>
+
       <input type="file" ref={fileSelectRef} style={{display: "none"}} onChange={onFileSelectChange} />
       { /* @ts-ignore */}
       <input type="file" ref={folderSelectRef} style={{display: "none"}} onChange={onFolderSelectChange} directory="" webkitdirectory="" msdirectory="" />
       <div className='file-uploader__header'>
         <div className='grid'>
           <div className='col' style={{maxWidth: "min-content"}}>
-          <Button icon="material-symbols-outlined mat-icon-document" onClick={onFileSelect} />
+            <Button icon="material-symbols-outlined mat-icon-document" onClick={onFileSelect} />
           </div>
           <div className='col' style={{maxWidth: "min-content"}}>
             <Button icon="material-symbols-outlined mat-icon-folder" onClick={onFolderSelect} />
           </div>
           <div className='col' style={{maxWidth: "min-content"}}>
-            <Button icon="material-symbols-outlined mat-icon-upload" onClick={onUpload} disabled={files.length === 0} />
+            <Button icon="material-symbols-outlined mat-icon-upload" onClick={onUpload} disabled={files.length === 0 || name.trim() === ""} />
           </div>
           <div className='col' style={{maxWidth: "min-content"}}>
             <Button icon="material-symbols-outlined mat-icon-close" onClick={onClear} disabled={files.length === 0} />
           </div>
           <div className='col'>
-            
+            <InputText value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" required className='file-uploader__header__name' style={{minWidth: "150px"}} />
           </div>
         </div>
       </div>
@@ -178,7 +212,7 @@ const FileUploader = () => {
       <div className='file-uploader__body' onDrop={onDrop} onDragOver={onDragOver} >
         <div className='grid'>
           {files.length === 0 ? (
-            <div className='col'>
+            <div className='col' onClick={onFileSelect}>
               <div className='file-uploader__body__empty'>
                 <div className='file-uploader__body__empty__icon'>
                   <i className="material-symbols-outlined mat-icon-document-drop" style={{fontSize: "55px"}} />
@@ -189,7 +223,7 @@ const FileUploader = () => {
               </div>
             </div>
           ) : (
-            <FileTable files={files} setFiles={setFiles} />
+            <FileTable files={files} setFiles={setFiles} state={FileTableState.REMOVE} />
           )}
         </div>
       </div>

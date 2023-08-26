@@ -4,8 +4,9 @@ import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import 'dotenv/config';
 import path from 'path';
-import authenticationRouter from './src/router/authenticationRouter';
-import apiRouter from './src/router/apiRouter';
+import authenticationRouter from './router/authenticationRouter';
+import apiRouter from './router/apiRouter';
+import adminRouter from './router/adminRouter';
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use(cors(corsOptions));
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use('/auth', authenticationRouter);
 app.use('/api', apiRouter);
+app.use('/admin', adminRouter);
 
 app.get('*', (req: Request,res: Response) => {
   res.sendFile(path.join(__dirname+'/dist/index.html'));

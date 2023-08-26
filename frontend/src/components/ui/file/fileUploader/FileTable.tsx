@@ -4,25 +4,38 @@ import { DataTable } from "primereact/datatable";
 import React, { useEffect, useState } from "react";
 import formatFileSize from "../../../../helper/formatFileSize";
 import './FileTable.scss';
-import { InputText } from "primereact/inputtext";
 import { useSettingsContext } from "../../../../hooks/SettingsHook";
 import chooseFileIcon from "../../../../helper/icons/chooseIcon";
+import { Button } from "primereact/button";
+
+export enum FileTableState {
+  DOWNLOAD,
+  REMOVE
+}
 
 interface FileTableProps {
   files: File[];
   setFiles: React.Dispatch<React.SetStateAction<File[]>>;
+  state?: FileTableState;
 }
 
 const FileTable: React.FC<FileTableProps> = (props) => {
-  const { files, setFiles } = props;
+  const { files, setFiles, state } = props;
   const { settings } = useSettingsContext();
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const removeFile = (file: File) => {
+    const updatedFiles = files.filter(f => f !== file);
+    setFiles(updatedFiles);
+  };
+  
+  const downloadFile = (file: File) => {
+    const url = URL.createObjectURL(file);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = file.name;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const iconBodyTemplate = (rowData: File) => {
     return <img className={`file-table__icon ${rowData.name}`} src={`/static/icons/${chooseFileIcon(rowData.name)}`} />;
@@ -40,29 +53,30 @@ const FileTable: React.FC<FileTableProps> = (props) => {
     return <Badge value={formatFileSize(rowData.size, settings.si)} />;
   };
 
-  const textEditor = (options: ColumnEditorOptions) => {
-    // @ts-ignore
-    return <InputText type="text" value={options.rowData.name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => options.editorCallback(e.target.value)} />;
-  };
-
-  const onCellEditComplete = (e: ColumnEvent) => {
-    let { rowData, newValue, field} = e;
-
-    let newFiles = [...files];
-    let file = newFiles.find((f) => f.name === rowData.name);
-    // @ts-ignore
-    file![field] = newValue;
-    setFiles(newFiles);
+  const actionBodyTemplate = (rowData: File) => {
+    if (props.state === FileTableState.REMOVE) {
+      return <Button onClick={() => removeFile(rowData)} label="Remove" />;
+    }
+    
+    if (props.state === FileTableState.DOWNLOAD) {
+      return <Button onClick={() => downloadFile(rowData)} label="Download" />;
+    }
+    
+    return null;
   };
   
-
   return (
     <div className="file-table" style={{width: "100%"}}>
-      <DataTable value={files} removableSort size="small" style={{width: "100%"}}>
-        <Column field="icon" header="Icon" body={iconBodyTemplate} />
-        <Column field="name" header="Name" body={nameBodyTemplate} editor={textEditor} onCellEditComplete={onCellEditComplete} />
-        {windowWidth >= 500 && <Column field="type" header="Type" body={typeBodyTemplate} />}
-        <Column field="size" header="Size" body={sizeBodyTemplate} />
+      <DataTable
+        value={files}
+        size="small"
+        style={{ width: "100%" }}
+      >
+        <Column header="Icon" body={iconBodyTemplate} />
+        <Column header="Name" body={nameBodyTemplate} />
+        <Column header="Type" body={typeBodyTemplate} />
+        <Column header="Size" body={sizeBodyTemplate} />
+        {state && <Column header="Action" body={actionBodyTemplate} />}
       </DataTable>
     </div>
   );

@@ -8,13 +8,15 @@ generator client {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  name         String   @unique 
-  password     String
-  role         Role     @default(USER)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String   @unique
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  maxSpace  Int      @default(1000000000)
+  uploads   Upload[]
 }
 
 enum Role {
@@ -23,8 +25,21 @@ enum Role {
 }
 
 model File {
-  id            Int    @id @default(autoincrement())
-  originalName  String
-  uniqueName    String @unique
+  id       Int    @id @default(autoincrement())
+  name     String
+  space    Int
+  uploadId Int
+  upload   Upload @relation(fields: [uploadId], references: [id])
+}
+
+model Upload {
+  id            Int      @id @default(autoincrement())
+  name          String
   path          String
+  views         Int      @default(0)
+  downloadCount Int      @default(0)
+  createdAt     DateTime @default(now())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  files         File[]
 }

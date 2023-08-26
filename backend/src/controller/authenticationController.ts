@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import "dotenv/config";
 import { setTokenCookie } from "../middleware/authentication";
-import { PrismaClient, User, Role } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -33,58 +33,13 @@ export const postLogin = async (req: Request, res: Response) => {
       message: "User successfully logged in",	
       email: login.email,
       username: login.name,
+      role: login.role,
     };
 
     return res.status(200).json(responseObject);
   } catch (error: any) {
     console.error(error.message);
     return res.status(500).json({ error: "Server error" });
-  }
-};
-
-export const postRegister = async (req: Request, res: Response) => {
-  try {
-    // @ts-ignore
-    const currentUser = req.user as User;
-    if (currentUser.role !== Role.ADMIN) {
-      return res.status(403).json({ error: "Only admins can create new users" });
-    }
-    
-    const username = req.body.username;
-    const email = req.body.email;
-    const password = req.body.password;
-
-    // Check if the login with the email from "own platform" already exists
-    const existingLogin = await prisma.user.findFirst({ where: { email } });
-
-    if (existingLogin) {
-      console.log("User already exists");
-      return res.status(409).json({ error: "User already exists" });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 12);
-    
-    // Create a new login for the user
-    const newUser = await prisma.user.create({
-      data: {
-        email: email,
-        name: username,
-        password: hashedPassword,
-      },
-    });
-
-    setTokenCookie(res, newUser);
-
-    const responseObject = {
-      message: "User successfully created",
-      username: username,
-      email: email,
-    };
-
-    return res.status(201).json(responseObject);
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ error: "Error creating user" });
   }
 };
 
@@ -104,7 +59,6 @@ export const handleLogout = (req: Request, res: Response) => {
 
 
 export default {
-  postRegister,
   postLogin,
   checkSession,
   handleLogout
