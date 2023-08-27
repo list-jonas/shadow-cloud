@@ -240,3 +240,7 @@
 .mat-icon-delete::before {
   content: "delete";
 }
+
+.mat-icon-copy::before {
+  content: "content_copy";
+}

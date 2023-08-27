@@ -169,7 +169,6 @@ const FileUploader = () => {
       setProgress(100);
       showInfo('Success', response.data.message);
       setDownloadUrl(`${routesData.baseUrl()}/file/${response.data.location}`);
-      
     }).catch((error: any) => {
       if (error.request.data && error.request.data?.error) {
         showError('Error', error.request.data.error);
@@ -180,11 +179,30 @@ const FileUploader = () => {
     });
   };
 
+  const copyToClipboard = () => {
+    if (downloadUrl) {
+        navigator.clipboard.writeText(downloadUrl)
+            .then(() => {
+                showInfo('Info', 'URL copied to clipboard!');
+            })
+            .catch(err => {
+                showError('Error', 'Failed to copy URL to clipboard');
+            });
+    } else {
+        showWarn('Warning', 'Nothing to copy!');
+    }
+  };
+
   return (
     <div className="file-uploader border">
-      <div>
-        {downloadUrl}
-      </div>
+      {downloadUrl && (
+        <div className='mb-2'>
+          <div className="p-inputgroup">
+            <InputText value={downloadUrl} contentEditable={false} style={{userSelect: "contain", height: "50px"}} />
+            <Button icon="material-symbols-outlined mat-icon-copy" onClick={copyToClipboard} />
+          </div>
+        </div>
+      )}
 
       <input type="file" ref={fileSelectRef} style={{display: "none"}} onChange={onFileSelectChange} />
       { /* @ts-ignore */}

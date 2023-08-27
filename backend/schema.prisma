@@ -27,7 +27,8 @@ enum Role {
 model File {
   id       Int    @id @default(autoincrement())
   name     String
-  space    Int
+  type     String
+  size     Int
   uploadId Int
   upload   Upload @relation(fields: [uploadId], references: [id])
 }
@@ -35,7 +36,7 @@ model File {
 model Upload {
   id            Int      @id @default(autoincrement())
   name          String
-  path          String
+  path          String   @unique
   views         Int      @default(0)
   downloadCount Int      @default(0)
   createdAt     DateTime @default(now())

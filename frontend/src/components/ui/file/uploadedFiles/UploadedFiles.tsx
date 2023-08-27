@@ -26,6 +26,7 @@ const UploadedFiles = () => {
         style={{ width: "100%" }}
       >
         <Column field="name" header="Name" sortable />
+        <Column field="path" header="Path" sortable />
         <Column field="createdAt" header="Uploaded" sortable />
         <Column field="downloadCount" header="Downloads" sortable />
         <Column field="views" header="Views" sortable />

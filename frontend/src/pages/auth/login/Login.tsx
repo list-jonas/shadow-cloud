@@ -27,6 +27,7 @@ const Login = () => {
       message: string;
       userId: number;
       admin: boolean;
+      role: string;
     }
 
     axios.post<ResponseData>(authRoutes.login, {
@@ -34,12 +35,12 @@ const Login = () => {
       password: password
     }, { withCredentials: true })
       .then((response: AxiosResponse<ResponseData>) => {
-        console.log(response);
+        console.log(response.data);
         
         showSuccess('Success', response.data.message);
         updateSettings({email: response.data.email});
         updateSettings({userId: response.data.userId});
-        updateSettings({admin: response.data.admin});
+        updateSettings({admin: response.data.role.toLowerCase() === 'admin'});
         navigate("/dashboard")
       })
       .catch((error: any) => {

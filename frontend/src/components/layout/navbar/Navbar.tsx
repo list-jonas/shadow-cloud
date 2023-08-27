@@ -1,20 +1,26 @@
-import { MenuItem } from 'primereact/menuitem';
+import { MenuItem, MenuItemCommandEvent } from 'primereact/menuitem';
 
-import favicon from 'assets/favicon.ico';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import authRoutes from '../../../routes/authRoutes';
 import { useToast } from '../../../hooks/ToastHook';
 import { Menubar } from 'primereact/menubar';
 import { useSettingsContext } from '../../../hooks/SettingsHook';
+import Logo from './Logo';
 
 const Navbar = () => {
   const navigate = useNavigate()
   const { showSuccess, showError } = useToast();
   const { settings } = useSettingsContext();
  
-  const redirectTo = (url: string) => {
-    navigate(url)
+  const redirectTo = (e: any, url: string) => {
+    if(e && e.originalEvent && typeof e.originalEvent.preventDefault === 'function') {
+      e.originalEvent.preventDefault();
+    } else if(e && typeof e.preventDefault === 'function') {
+      e.preventDefault();
+    }
+
+    navigate(url);
   }
 
   const logout = () => {
@@ -39,17 +45,19 @@ const Navbar = () => {
     {
       label: 'Dashboard',
       icon: 'material-symbols-outlined mat-icon-dashboard',
-      command: () => redirectTo("/dashboard")
+      url: '/dashboard',
+      command: (e) => redirectTo(e, "/dashboard")
     },
     // Settings
     {
-      label: 'Einstellungen',
+      label: 'Settings',
       icon: 'material-symbols-outlined mat-icon-settings',
-      command: () => redirectTo("/dashboard/settings"),
+      url: '/dashboard/settings',
+      command: (e) => redirectTo(e, "/dashboard/settings"),
     },
     // Logout
     {
-      label: 'Abmelden',
+      label: 'Logout',
       icon: 'material-symbols-outlined mat-icon-logout',
       command: () => logout(),
     },
@@ -57,26 +65,24 @@ const Navbar = () => {
 
   if(settings.admin) {
     // Admin
-    items.splice(3, 0, {
+    items.splice(1, 0, {
       label: 'Admin',
       icon: 'material-symbols-outlined mat-icon-admin',
       items: [{
-        label: 'Benutzer',
+        label: 'Users',
         icon: 'material-symbols-outlined mat-icon-users',
-        command: () => redirectTo("/dashboard/admin/users"),
-      }, {
-        label: 'Parkplätze',
-        icon: 'material-symbols-outlined mat-icon-dashboard',
-        command: () => redirectTo("/dashboard/admin/spaces"),
+        url: '/dashboard/admin/users',
+        command: (e) => redirectTo(e, "/dashboard/admin/users"),
       }, {
         label: 'Stats',
         icon: 'material-symbols-outlined mat-icon-log',
-        command: () => redirectTo("/dashboard/admin/stats"),
+        url: '/dashboard/admin/stats',
+        command: (e) => redirectTo(e, "/dashboard/admin/stats"),
       }],
     });
   }
 
-  const start = <img alt="logo" src={favicon} height="40" style={{marginRight: "10px", marginLeft: "5px"}} onClick={() => redirectTo("/dashboard")} />;
+  const start = <Logo href="/dashboard" style={{marginRight: "10px", marginLeft: "5px", width: "40px", height: "40px", display: "flex"}} onClick={(e) => redirectTo(e, "/dashboard")} />;
 
   const end = <div className='mr-2'>{settings.email}</div>
 

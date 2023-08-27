@@ -11,7 +11,7 @@ const Dashboard = () => {
       <Card title="Upload Files" className="mb-4">
         <FileUploader />
       </Card>
-      <Card title="Uploaded Files">
+      <Card title="Uploads">
         <UploadedFiles />
       </Card>
     </Content>
