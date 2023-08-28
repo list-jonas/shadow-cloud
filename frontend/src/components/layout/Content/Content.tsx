@@ -1,4 +1,4 @@
-import React, { Children } from 'react';
+import React from 'react';
 
 interface ContentProps extends React.HTMLAttributes<HTMLDivElement> {
   title?: string;

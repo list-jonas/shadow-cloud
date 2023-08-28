@@ -1,4 +1,4 @@
-import { MenuItem, MenuItemCommandEvent } from 'primereact/menuitem';
+import { MenuItem } from 'primereact/menuitem';
 
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -7,21 +7,12 @@ import { useToast } from '../../../hooks/ToastHook';
 import { Menubar } from 'primereact/menubar';
 import { useSettingsContext } from '../../../hooks/SettingsHook';
 import Logo from './Logo';
+import redirectTo from '../../../helper/redirectTo';
 
 const Navbar = () => {
   const navigate = useNavigate()
   const { showSuccess, showError } = useToast();
   const { settings } = useSettingsContext();
- 
-  const redirectTo = (e: any, url: string) => {
-    if(e && e.originalEvent && typeof e.originalEvent.preventDefault === 'function') {
-      e.originalEvent.preventDefault();
-    } else if(e && typeof e.preventDefault === 'function') {
-      e.preventDefault();
-    }
-
-    navigate(url);
-  }
 
   const logout = () => {
     axios.post(authRoutes.logout, 
@@ -46,14 +37,14 @@ const Navbar = () => {
       label: 'Dashboard',
       icon: 'material-symbols-outlined mat-icon-dashboard',
       url: '/dashboard',
-      command: (e) => redirectTo(e, "/dashboard")
+      command: (e) => redirectTo(navigate, e, "/dashboard")
     },
     // Settings
     {
       label: 'Settings',
       icon: 'material-symbols-outlined mat-icon-settings',
       url: '/dashboard/settings',
-      command: (e) => redirectTo(e, "/dashboard/settings"),
+      command: (e) => redirectTo(navigate, e, "/dashboard/settings"),
     },
     // Logout
     {
@@ -72,17 +63,17 @@ const Navbar = () => {
         label: 'Users',
         icon: 'material-symbols-outlined mat-icon-users',
         url: '/dashboard/admin/users',
-        command: (e) => redirectTo(e, "/dashboard/admin/users"),
+        command: (e) => redirectTo(navigate, e, "/dashboard/admin/users"),
       }, {
         label: 'Stats',
         icon: 'material-symbols-outlined mat-icon-log',
         url: '/dashboard/admin/stats',
-        command: (e) => redirectTo(e, "/dashboard/admin/stats"),
+        command: (e) => redirectTo(navigate, e, "/dashboard/admin/stats"),
       }],
     });
   }
 
-  const start = <Logo href="/dashboard" style={{marginRight: "10px", marginLeft: "5px", width: "40px", height: "40px", display: "flex"}} onClick={(e) => redirectTo(e, "/dashboard")} />;
+  const start = <Logo href="/dashboard" style={{marginRight: "10px", marginLeft: "5px", width: "40px", height: "40px", display: "flex"}} onClick={(e) => redirectTo(navigate, e, "/dashboard")} />;
 
   const end = <div className='mr-2'>{settings.email}</div>
 

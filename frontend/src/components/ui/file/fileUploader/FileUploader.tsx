@@ -146,6 +146,7 @@ const FileUploader = () => {
     
     setProgress(0);
     setProcessing(false);
+    console.log(totalSize);
   };
 
   const onUpload = () => {
@@ -169,9 +170,18 @@ const FileUploader = () => {
       setProgress(100);
       showInfo('Success', response.data.message);
       setDownloadUrl(`${routesData.baseUrl()}/file/${response.data.location}`);
+      setFiles([]);
+      setTotalSize(0);
+      setName('');
+      // wait a second before resetting progress
+      setTimeout(() => {
+        setProgress(0);
+      }, 1000);
     }).catch((error: any) => {
-      if (error.request.data && error.request.data?.error) {
-        showError('Error', error.request.data.error);
+      console.log(error);
+      
+      if (error.response.data && error.response.data?.error) {
+        showError('Error', error.response.data.error);
       } else {
         showError('Error', error.message);
       }
@@ -185,7 +195,7 @@ const FileUploader = () => {
             .then(() => {
                 showInfo('Info', 'URL copied to clipboard!');
             })
-            .catch(err => {
+            .catch(() => {
                 showError('Error', 'Failed to copy URL to clipboard');
             });
     } else {
@@ -204,7 +214,7 @@ const FileUploader = () => {
         </div>
       )}
 
-      <input type="file" ref={fileSelectRef} style={{display: "none"}} onChange={onFileSelectChange} />
+      <input type="file" ref={fileSelectRef} style={{display: "none"}} onChange={onFileSelectChange} multiple />
       { /* @ts-ignore */}
       <input type="file" ref={folderSelectRef} style={{display: "none"}} onChange={onFolderSelectChange} directory="" webkitdirectory="" msdirectory="" />
       <div className='file-uploader__header'>

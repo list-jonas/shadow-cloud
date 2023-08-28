@@ -3,6 +3,9 @@ body {
   overflow-x: hidden;
   background-color: var(--surface-ground);
   color: var(--text-color);
+  margin: 0;
+  padding: 8px;
+  box-sizing: border-box;
 }
 
 .p-password-input,

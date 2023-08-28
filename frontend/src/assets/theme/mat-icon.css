@@ -244,3 +244,27 @@
 .mat-icon-copy::before {
   content: "content_copy";
 }
+
+.mat-icon-bin::before {
+  content: "delete_outline";
+}
+
+.mat-icon-edit::before {
+  content: "edit";
+}
+
+.mat-icon-search::before {
+  content: "search";
+}
+
+.mat-icon-download::before {
+  content: "download";
+}
+
+.mat-icon-dark::before {
+  content: "dark_mode";
+}
+
+.mat-icon-light::before {
+  content: "light_mode";
+}

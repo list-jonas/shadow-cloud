@@ -1,12 +1,13 @@
 import { Badge } from "primereact/badge";
-import { Column, ColumnEditorOptions, ColumnEvent } from "primereact/column";
+import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import formatFileSize from "../../../../helper/formatFileSize";
 import './FileTable.scss';
 import { useSettingsContext } from "../../../../hooks/SettingsHook";
 import chooseFileIcon from "../../../../helper/icons/chooseIcon";
 import { Button } from "primereact/button";
+import IFile from "../../../../interfaces/IFile";
 
 export enum FileTableState {
   DOWNLOAD,
@@ -14,31 +15,40 @@ export enum FileTableState {
 }
 
 interface FileTableProps {
-  files: File[];
+  files: File[] | IFile[];
   setFiles: React.Dispatch<React.SetStateAction<File[]>>;
   state?: FileTableState;
+  downloadFile?: (fileId: number) => void;
 }
 
 const FileTable: React.FC<FileTableProps> = (props) => {
-  const { files, setFiles, state } = props;
+  const { files, setFiles, state, downloadFile } = props;
   const { settings } = useSettingsContext();
 
-  const removeFile = (file: File) => {
-    const updatedFiles = files.filter(f => f !== file);
+  const removeFile = (file: File | IFile) => {
+    // @ts-ignore
+    const updatedFiles = files.filter((f: any) => f !== file) as File[];
     setFiles(updatedFiles);
-  };
-  
-  const downloadFile = (file: File) => {
-    const url = URL.createObjectURL(file);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = file.name;
-    a.click();
-    URL.revokeObjectURL(url);
   };
 
   const iconBodyTemplate = (rowData: File) => {
-    return <img className={`file-table__icon ${rowData.name}`} src={`/static/icons/${chooseFileIcon(rowData.name)}`} />;
+    // if type is image display image
+
+    if (rowData.type.startsWith('image') && (rowData instanceof File)) {
+      // prevent drag of img
+      return (
+        <div style={{maxWidth: "100%", display: "flex", justifyContent: "center"}}>
+          <img className={`file-table__icon ${rowData.name}`} src={URL.createObjectURL(rowData)} style={{maxWidth: "100%"}} onDragStart={e => e.preventDefault()} />
+        </div>
+      );
+    }
+
+    // prevent drag of img
+    return (
+      <div style={{maxWidth: "100%", display: "flex", justifyContent: "center"}}>
+        <img className={`file-table__icon ${rowData.name}`} src={`/static/icons/${chooseFileIcon(rowData.name)}`} onDragStart={e => e.preventDefault()} />
+      </div>
+    );
   };
 
   const nameBodyTemplate = (rowData: File) => {
@@ -54,12 +64,22 @@ const FileTable: React.FC<FileTableProps> = (props) => {
   };
 
   const actionBodyTemplate = (rowData: File) => {
-    if (props.state === FileTableState.REMOVE) {
-      return <Button onClick={() => removeFile(rowData)} label="Remove" />;
-    }
+    console.log(state);
     
+    if (props.state === FileTableState.REMOVE) {
+      return <Button onClick={() => removeFile(rowData)} icon="material-symbols-outlined mat-icon-bin" />;
+    }
     if (props.state === FileTableState.DOWNLOAD) {
-      return <Button onClick={() => downloadFile(rowData)} label="Download" />;
+      if (!downloadFile) {
+        return null;
+      }
+      // @ts-ignore
+      if (!(rowData as IFile).id) {
+        return null;
+      }
+      
+      // @ts-ignore
+      return <Button onClick={() => downloadFile(rowData.id)} icon="material-symbols-outlined mat-icon-download" />;
     }
     
     return null;
@@ -72,11 +92,11 @@ const FileTable: React.FC<FileTableProps> = (props) => {
         size="small"
         style={{ width: "100%" }}
       >
-        <Column header="Icon" body={iconBodyTemplate} />
+        <Column header="Icon" body={iconBodyTemplate} style={{maxWidth: "60px"}} />
         <Column header="Name" body={nameBodyTemplate} />
         <Column header="Type" body={typeBodyTemplate} />
         <Column header="Size" body={sizeBodyTemplate} />
-        {state && <Column header="Action" body={actionBodyTemplate} />}
+        {state !== undefined && <Column header="Action" body={actionBodyTemplate} />}
       </DataTable>
     </div>
   );

@@ -1,3 +1,5 @@
+import IFile from "./IFile";
+
 interface IUpload {
     id: number;
     name: string;
@@ -5,5 +7,7 @@ interface IUpload {
     createdAt: Date;
     downloadCount: number;
     views: number;
-    files: File[];
+    files: IFile[];
 }
+
+export default IUpload;

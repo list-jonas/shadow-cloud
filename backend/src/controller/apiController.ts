@@ -64,6 +64,9 @@ export const getUploads = async (req: Request, res: Response) => {
       where: {
         userId: currentUser.id,
       },
+      include: {
+        files: true,
+      },
     });
 
     return res.status(200).json(uploads);
@@ -85,15 +88,15 @@ export const getUpload = async (req: Request, res: Response) => {
     // Get and add to view count
     const upload = await prisma.upload.update({
         where: {
-            path: user + "\\" + id,
+          path: user + "\\" + id,
         },
         data: {
-            views: {
-                increment: 1
-            }
+          views: {
+            increment: 1
+          }
         },
         include: {
-            files: true,
+          files: true,
         },
     });
 
@@ -108,8 +111,47 @@ export const getUpload = async (req: Request, res: Response) => {
   }
 };
 
+export const getDownload = async (req: Request, res: Response) => {
+  try {
+    const uploadUser = req.params.uploadUser as string;
+    const uploadId = req.params.uploadId as string;
+    const fileId = parseInt(req.params.fileId);
+
+    // Get upload from database
+    const upload = await prisma.upload.update({
+      where: {
+        path: uploadUser + "\\" + uploadId,
+      },
+      data: {
+        downloadCount: {
+          increment: 1
+        }
+      },
+      include: {
+        files: true,
+      },
+    });
+
+    if (!upload) return res.status(404).json({ error: "Upload not found" });
+
+    const file = upload.files.find((file) => file.id === fileId);
+
+    if (!file) return res.status(404).json({ error: "File not found" });
+
+    // Send file to client
+    return res.download(
+      path.join(__dirname, "..", "..", "uploads", upload.path, file.name),
+      file.name
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Something went wrong while downloading" });
+  }
+};
+
 export default {
   postUpload,
   getUploads,
   getUpload,
+  getDownload,
 };

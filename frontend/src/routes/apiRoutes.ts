@@ -2,10 +2,12 @@ import routesData from "../data/routesData";
 
 export const postUpload = `${routesData.baseUrl()}/api/upload`; // {files}
 export const getUploads = `${routesData.baseUrl()}/api/uploads`; // => uploads
-export const getUpload = `${routesData.baseUrl()}/api/upload`; // {uploadId} => upload
+export const getUpload = `${routesData.baseUrl()}/api/upload`; // {uploadUser, uploardId} => upload
+export const getDownload = `${routesData.baseUrl()}/api/download`; // {uploadUser, uploadId, fileId} => file download
 
 export default {
   postUpload,
   getUploads,
-  getUpload
+  getUpload,
+  getDownload,
 }
