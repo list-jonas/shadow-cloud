@@ -40,7 +40,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
 
   const showWarn = useCallback((summary: string, detail: string) => {
     // @ts-ignore
-    toast.current.show({ severity: 'warn', summary, detail, life: 2000 });
+    toast.current.show({ severity: 'warn', summary, detail, life: 4000 });
   }, []);
 
   const showError = useCallback((summary: string, detail: string) => {

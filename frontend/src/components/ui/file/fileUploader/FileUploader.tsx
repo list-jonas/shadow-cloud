@@ -220,19 +220,19 @@ const FileUploader = () => {
       <div className='file-uploader__header'>
         <div className='grid'>
           <div className='col' style={{maxWidth: "min-content"}}>
-            <Button icon="material-symbols-outlined mat-icon-document" onClick={onFileSelect} />
+            <Button icon="material-symbols-outlined mat-icon-document" onClick={onFileSelect} disabled={progress !== 0} />
           </div>
           <div className='col' style={{maxWidth: "min-content"}}>
-            <Button icon="material-symbols-outlined mat-icon-folder" onClick={onFolderSelect} />
+            <Button icon="material-symbols-outlined mat-icon-folder" onClick={onFolderSelect} disabled={progress !== 0} />
           </div>
           <div className='col' style={{maxWidth: "min-content"}}>
-            <Button icon="material-symbols-outlined mat-icon-upload" onClick={onUpload} disabled={files.length === 0 || name.trim() === ""} />
+            <Button icon="material-symbols-outlined mat-icon-upload" onClick={onUpload} disabled={files.length === 0 || name.trim() === "" || progress !== 0} />
           </div>
           <div className='col' style={{maxWidth: "min-content"}}>
-            <Button icon="material-symbols-outlined mat-icon-close" onClick={onClear} disabled={files.length === 0} />
+            <Button icon="material-symbols-outlined mat-icon-close" onClick={onClear} disabled={files.length === 0 || progress !== 0} />
           </div>
           <div className='col'>
-            <InputText value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" required className='file-uploader__header__name' style={{minWidth: "150px"}} />
+            <InputText value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" required className='file-uploader__header__name' style={{minWidth: "150px"}} disabled={progress !== 0} />
           </div>
         </div>
       </div>
@@ -251,7 +251,7 @@ const FileUploader = () => {
               </div>
             </div>
           ) : (
-            <FileTable files={files} setFiles={setFiles} state={FileTableState.REMOVE} />
+            <FileTable files={files} setFiles={setFiles} state={FileTableState.REMOVE} actionDisabled={progress !== 0} />
           )}
         </div>
       </div>

@@ -5,8 +5,8 @@ import adminController from "../controller/adminController";
 const adminRouter: Router = express.Router();
 
 adminRouter.get("/users", authenticateUser(), adminController.getUsers);
-adminRouter.get("/add_user", authenticateUser(), adminController.addUser);
-adminRouter.get("/edit_user", authenticateUser(), adminController.editUser);
-adminRouter.get("/delete_user", authenticateUser(), adminController.deleteUser);
+adminRouter.post("/add_user", authenticateUser(), adminController.addUser);
+adminRouter.put("/edit_user/:id", authenticateUser(), adminController.editUser);
+adminRouter.delete("/delete_user/:id", authenticateUser(), adminController.deleteUser);
 
 export default adminRouter;

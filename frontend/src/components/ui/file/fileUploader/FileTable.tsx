@@ -19,10 +19,11 @@ interface FileTableProps {
   setFiles: React.Dispatch<React.SetStateAction<File[]>>;
   state?: FileTableState;
   downloadFile?: (fileId: number) => void;
+  actionDisabled?: boolean;
 }
 
 const FileTable: React.FC<FileTableProps> = (props) => {
-  const { files, setFiles, state, downloadFile } = props;
+  const { files, setFiles, state, downloadFile, actionDisabled } = props;
   const { settings } = useSettingsContext();
 
   const removeFile = (file: File | IFile) => {
@@ -67,7 +68,7 @@ const FileTable: React.FC<FileTableProps> = (props) => {
     console.log(state);
     
     if (props.state === FileTableState.REMOVE) {
-      return <Button onClick={() => removeFile(rowData)} icon="material-symbols-outlined mat-icon-bin" />;
+      return <Button onClick={() => removeFile(rowData)} icon="material-symbols-outlined mat-icon-bin" disabled={actionDisabled} />;
     }
     if (props.state === FileTableState.DOWNLOAD) {
       if (!downloadFile) {
@@ -79,7 +80,7 @@ const FileTable: React.FC<FileTableProps> = (props) => {
       }
       
       // @ts-ignore
-      return <Button onClick={() => downloadFile(rowData.id)} icon="material-symbols-outlined mat-icon-download" />;
+      return <Button onClick={() => downloadFile(rowData.id)} icon="material-symbols-outlined mat-icon-download" disabled={actionDisabled} />;
     }
     
     return null;

@@ -33,6 +33,10 @@ const FileView = () => {
   , [user, id]);
 
   const downloadFile = (fileId: number) => {
+    const updatedUpload = upload;
+    updatedUpload!.downloadCount++;
+    setUpload(updatedUpload);
+    
     axios.get(apiRoutes.getDownload + `/${user}/${id}/${fileId}`, { withCredentials: true, responseType: 'blob' })
       .then((res: any) => {
         // Convert the data to a blob
@@ -54,19 +58,15 @@ const FileView = () => {
         URL.revokeObjectURL(link.href);
       }
     )
-
-    const updatedUpload = upload;
-    updatedUpload!.downloadCount++;
-    setUpload(updatedUpload);
   }
 
   return (
-    <Content title={`Upload ${upload?.name}`}>
+    <Content title={`${upload?.name}`}>
       {settings.email && <Button icon="material-symbols-outlined mat-icon-back" rounded raised outlined className="mb-4" onClick={() => navigate("/dashboard")} />}
       <Card title="Details" className="mb-4">
         <div className="grid">
           <div className="col">
-            Username:
+            Uploader:
           </div>
           <div className="col">
             {user}
@@ -87,7 +87,7 @@ const FileView = () => {
                 Created At:
               </div>
               <div className="col">
-                {upload.createdAt + ""}
+                {new Date(upload.createdAt).toLocaleString()}
               </div>
             </div>
 

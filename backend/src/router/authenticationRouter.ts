@@ -6,6 +6,7 @@ const authenticationRouter: Router = express.Router();
 
 //Normal login/registration
 authenticationRouter.post("/login", authenticationController.postLogin);
+authenticationRouter.put("/change_password", authenticationController.changePassword);
 authenticationRouter.get("/checkSession", authenticateUser(), authenticationController.checkSession);
 
 // Handles logout

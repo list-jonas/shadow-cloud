@@ -8,7 +8,7 @@ generator client {
 }
 
 model User {
-  id        String   @id @default(uuid())
+  id        Int      @id @default(autoincrement())
   email     String   @unique
   name      String   @unique
   password  String
@@ -25,12 +25,13 @@ enum Role {
 }
 
 model File {
-  id       Int    @id @default(autoincrement())
+  id       Int    @default(autoincrement())
+  uploadId Int    
   name     String
   type     String
   size     Int
-  uploadId Int
   upload   Upload @relation(fields: [uploadId], references: [id])
+  @@id([uploadId, id])
 }
 
 model Upload {
@@ -40,7 +41,7 @@ model Upload {
   views         Int      @default(0)
   downloadCount Int      @default(0)
   createdAt     DateTime @default(now())
-  userId        String
+  userId        Int
   user          User     @relation(fields: [userId], references: [id])
   files         File[]
 }

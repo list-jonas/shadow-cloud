@@ -44,7 +44,7 @@ const Login = () => {
         navigate("/dashboard")
       })
       .catch((error: any) => {
-        if (error.response.data && error.response.data?.error) {
+        if (error.response.data) {
           showError('Error', error.response.data.error);
         } else {
           showError('Error', error.message);

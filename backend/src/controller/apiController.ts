@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import "dotenv/config";
 import path from "path";
+import deleteUploadHelper from "../helper/deleteUpload";
 
 const prisma = new PrismaClient();
 
@@ -111,6 +112,31 @@ export const getUpload = async (req: Request, res: Response) => {
   }
 };
 
+export const deleteUpload = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const currentUser = req.user as User;
+    const uploadId = parseInt(req.params.id);
+
+    // Check if user is owner of upload
+    const upload = await prisma.upload.findFirst({
+      where: {
+        id: uploadId,
+        userId: currentUser.id,
+      },
+    });
+
+    if (!upload) return res.status(404).json({ error: "Upload not found" });
+
+    deleteUploadHelper(uploadId);
+
+    return res.status(200).json({ message: "Upload deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Something went wrong while deleting" });
+  }
+};
+
 export const getDownload = async (req: Request, res: Response) => {
   try {
     const uploadUser = req.params.uploadUser as string;
@@ -153,5 +179,6 @@ export default {
   postUpload,
   getUploads,
   getUpload,
+  deleteUpload,
   getDownload,
 };

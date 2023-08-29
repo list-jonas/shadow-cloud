@@ -43,6 +43,37 @@ export const postLogin = async (req: Request, res: Response) => {
   }
 };
 
+export const changePassword = async (req: Request, res: Response) => {
+  const { id, password, newPassword } = req.body;
+
+  try {
+    const login = await prisma.user.findFirst({ where: { id: id } });
+    if (!login) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+
+    const isMatch = await bcrypt.compare(password, login.password!);
+    if (!isMatch) {
+      return res.status(401).json({ error: "Invalid password" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+    await prisma.user.update({
+      where: { id: id },
+      data: { password: hashedPassword },
+    });
+
+    const responseObject = {
+      message: "Password successfully changed",
+    };
+
+    return res.status(200).json(responseObject);
+  } catch (error: any) {
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
 export const checkSession = (req: Request, res: Response) => {
   return res.sendStatus(200);
 };
@@ -60,6 +91,7 @@ export const handleLogout = (req: Request, res: Response) => {
 
 export default {
   postLogin,
+  changePassword,
   checkSession,
   handleLogout
 };

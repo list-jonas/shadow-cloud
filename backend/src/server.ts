@@ -30,13 +30,15 @@ const corsOptions: cors.CorsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(path.join(__dirname, '/../dist')));
 app.use('/auth', authenticationRouter);
 app.use('/api', apiRouter);
 app.use('/admin', adminRouter);
 
 app.get('*', (req: Request,res: Response) => {
-  res.sendFile(path.join(__dirname+'/dist/index.html'));
+  console.log(__dirname);
+  
+  res.sendFile(path.join(__dirname+'/../dist/index.html'));
 });
 
 if (!process.env.DATABASE_URL!) {
