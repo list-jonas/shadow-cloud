@@ -35,8 +35,6 @@ const Login = () => {
       password: password
     }, { withCredentials: true })
       .then((response: AxiosResponse<ResponseData>) => {
-        console.log(response.data);
-        
         showSuccess('Success', response.data.message);
         updateSettings({email: response.data.email});
         updateSettings({userId: response.data.userId});

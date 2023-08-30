@@ -6,6 +6,13 @@ services:
       - frontend
       - db
       - adminer
+    environment:
+      COMPOSE_PROJECT_NAME: "shadow-share"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "shadow-share"
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public"
+      JWT_SECRET: "P@Qr#Vt!As*rDH6#NPL*m2u!ZEG#JWn5QgZC32q2aawGt2mzU5wMg^adHbGTaB322jRB!8LZDF4AUV8P8r7&NMMSr5Sr#s*E*CTK"
     container_name: ${COMPOSE_PROJECT_NAME}-backend
     build:
       dockerfile: ./backend/Dockerfile_backend
@@ -37,11 +44,11 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - postgres-data:/var/lib/postgresql/data  # Persist database data
+      - postgres-data:/var/lib/postgresql/data
     ports:
-      - 5433:5432
+      - 5432:5432
     expose:
-      - "5433"
+      - "5432" # Expose port 5432 to be used in development
 
   adminer:
     image: adminer

@@ -12,6 +12,47 @@ export const postLogin = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   try {
+    // if user inside db are 0 then create admin
+    const users = await prisma.user.count();
+    if (users === 0) {
+      if (!email) {
+        return res.status(400).json({ error: "No email provided" });
+      }
+      if (!password) {
+        return res.status(400).json({ error: "No password provided" });
+      }
+      if (password.length < 8) {
+        return res
+          .status(400)
+          .json({ error: "Password must be at least 8 characters long" });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 12);
+
+      // Create a new login for the user
+      const user = await prisma.user.create({
+        data: {
+          email: email,
+          name: "admin",
+          password: hashedPassword,
+          maxSpace: 0,
+          role: "ADMIN",
+        },
+      });
+
+      const responseObject = {
+        message: "Admin user successfully created",
+        email: email,
+        username: "admin",
+        role: "ADMIN",
+      };
+
+      setTokenCookie(res, user);
+
+      return res.status(201).json(responseObject);
+    }
+
+
     const login = await prisma.user.findFirst({ where: { email: email } });
     if (!login) {
       return res.status(401).json({ error: "Invalid email or password" });

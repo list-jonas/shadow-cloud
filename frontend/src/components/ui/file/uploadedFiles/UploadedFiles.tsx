@@ -24,9 +24,8 @@ const UploadedFiles = () => {
     axios.get<IUpload[]>(apiRoutes.getUploads, { withCredentials: true })
       .then(res => {
         setUploads(res.data)
-        console.log(uploads);
-      }).catch(err => {
-        console.log(err)
+      }).catch(error => {
+        console.log(error)
       }
     )
   }, [])
@@ -35,7 +34,7 @@ const UploadedFiles = () => {
     {
       label: 'Delete',
       icon: 'material-symbols-outlined mat-icon-bin',
-      command: (event: any) => {
+      command: () => {
         // @ts-ignore
         cm.current?.hide();
 

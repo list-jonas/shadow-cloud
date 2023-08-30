@@ -36,8 +36,6 @@ app.use('/api', apiRouter);
 app.use('/admin', adminRouter);
 
 app.get('*', (req: Request,res: Response) => {
-  console.log(__dirname);
-  
   res.sendFile(path.join(__dirname+'/../dist/index.html'));
 });
 

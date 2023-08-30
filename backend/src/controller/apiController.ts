@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import "dotenv/config";
 import path from "path";
 import deleteUploadHelper from "../helper/deleteUpload";
+import fs from "fs";
 
 const prisma = new PrismaClient();
 
@@ -14,6 +15,38 @@ export const postUpload = async (req: Request, res: Response) => {
     // @ts-ignore
     const files = req.files as Express.Multer.File[];
     
+
+    // Check if maxSpace is exceeded
+    const user = await prisma.user.findUnique({
+      where: {
+        id: currentUser.id,
+      },
+    });
+
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    let maxSpace = user.maxSpace * 1000; // * 1000 to get bits
+    
+    const uploads = await prisma.upload.findMany({
+      where: {
+        userId: currentUser.id,
+      },
+      include: {
+        files: true,
+      },
+    });
+
+    uploads.forEach((upload) => {
+      upload.files.forEach((file) => {
+        maxSpace -= file.size;
+      });
+    });
+
+    // Also remove size of files that are being uploaded
+    files.forEach((file) => {
+      maxSpace -= file.size;
+    });
+
     const name = req.body.name;
 
     if (!name) return res.status(400).json({ error: "No name provided" });
@@ -43,6 +76,13 @@ export const postUpload = async (req: Request, res: Response) => {
     await prisma.file.createMany({
       data: filesToCreate,
     });
+
+    if (maxSpace < 0) {
+      console.log(`User ${currentUser.name} exceeded max space by ${maxSpace}bits`);
+      
+      deleteUploadHelper(upload.id as number);
+      return res.status(400).json({ error: "Max space exceeded" });
+    }
 
     return res.status(200).json({
       message: "Files uploaded successfully",

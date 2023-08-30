@@ -107,10 +107,7 @@ const FileUploader = () => {
     e.preventDefault();
     e.stopPropagation();
     let _files = [...e.target.files];
-
-    console.log("Test");
     
-
     // warning if folder is empty
     if (_files.length === 0) {
       showWarn('Warning', 'Folder is empty');
@@ -124,7 +121,6 @@ const FileUploader = () => {
     });
     // formatted date 2023-01-01
     const filename = new Date().toISOString().split('T')[0] + '.zip';
-    console.log(filename);
     
     const content = await zip.generateAsync({type:"blob"});
     const zipFile = new File([content], filename);

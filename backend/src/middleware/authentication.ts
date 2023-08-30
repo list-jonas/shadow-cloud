@@ -34,17 +34,13 @@ export const setTokenCookie = (res: Response, user: User) => {
     email: user.email,
     role: user.role,
   };
-  const token = jwt.sign(payload, secret, { expiresIn: "1h" });
+  const token = jwt.sign(payload, secret, { expiresIn: "5d" });
 
   res.cookie("jwt", token, {
-    maxAge: 3600000, // 1 hour
+    maxAge: 1000 * 60 * 60 * 24 * 5, // 5 days
     domain: 'localhost',
     secure: false, // set to true if your using https
   });
-  
-  console.log("payload is set with token");
-  console.log(payload);
-  console.log(token);
 
   return token;
 };

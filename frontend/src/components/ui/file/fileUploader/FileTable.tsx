@@ -65,8 +65,6 @@ const FileTable: React.FC<FileTableProps> = (props) => {
   };
 
   const actionBodyTemplate = (rowData: File) => {
-    console.log(state);
-    
     if (props.state === FileTableState.REMOVE) {
       return <Button onClick={() => removeFile(rowData)} icon="material-symbols-outlined mat-icon-bin" disabled={actionDisabled} />;
     }

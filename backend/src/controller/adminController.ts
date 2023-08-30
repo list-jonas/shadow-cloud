@@ -93,9 +93,6 @@ export const editUser = async (req: Request, res: Response) => {
     return res.status(403).json({ error: "Access denied" });
   }
 
-  // @ts-ignore
-  console.log(req.body);
-
   try {
     const id = parseInt(req.params.id);
     const user = await prisma.user.update({
