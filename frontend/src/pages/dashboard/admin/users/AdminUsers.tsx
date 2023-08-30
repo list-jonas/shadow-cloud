@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Card } from 'primereact/card';
-import { MouseEventHandler, useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import adminRoutes from '../../../../routes/adminRoutes';
 import IUser, { Role } from '../../../../interfaces/IUser';
 import { DataTable, DataTableFilterMeta, DataTableRowEditCompleteEvent } from 'primereact/datatable';
@@ -16,6 +16,8 @@ import { useToast } from '../../../../hooks/ToastHook';
 import { useSettingsContext } from '../../../../hooks/SettingsHook';
 import AddUserDialog from './AddUserDialog';
 import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
+import { ContextMenu } from 'primereact/contextmenu';
+import { DomHandler } from 'primereact/utils';
 
 
 const AdminUsers = () => {
@@ -34,6 +36,9 @@ const AdminUsers = () => {
     maxSpace: { value: null, matchMode: FilterMatchMode.EQUALS },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState<string>('');
+  const cm = useRef<ContextMenu>(null);
+  const dt = useRef<any>(null);
+
 
   useEffect(() => {
     axios.get<IUser[]>(adminRoutes.getUsers, { withCredentials: true})
@@ -50,6 +55,37 @@ const AdminUsers = () => {
         }
       })
   }, []);
+
+  const contextMenuItems = [
+    {
+      label: 'Edit',
+      icon: 'material-symbols-outlined mat-icon-edit',
+      command: (event: any) => {
+        setSelectedUser(event.item.rowData);
+        // @ts-ignore
+        cm.current?.hide();
+
+        const index = users.findIndex(user => user.id === selectedUser!.id);
+
+        DomHandler.find(document.body, '.p-row-editor-init')[index].click();
+      }
+    },
+    {
+      label: 'Delete',
+      icon: 'material-symbols-outlined mat-icon-bin',
+      command: (event: any) => {
+        setSelectedUser(event.item.rowData);
+        confirmDeletion(event.originalEvent);
+      }
+    },
+    {
+      label: 'Add User',
+      icon: 'material-symbols-outlined mat-icon-plus',
+      command: () => {
+        setVisible(true);
+      }
+    }
+  ];
 
   const onAddUser = (user: IUser) => {
     axios.post(adminRoutes.addUser, {
@@ -255,7 +291,18 @@ const AdminUsers = () => {
             metaKeySelection={false}
             selectionMode='single'
             selection={selectedUser as any}
-            onSelectionChange={e => setSelectedUser(e.value as any)} >
+            onSelectionChange={e => {
+              setSelectedUser(e.value as any)
+              // @ts-ignore
+              cm.current?.show();
+            }}
+            contextMenuSelection={selectedUser as any}
+            onContextMenu={e => {
+              setSelectedUser(e.data as any)
+              cm.current?.show(e.originalEvent);
+            }}
+            onContextMenuSelectionChange={e => setSelectedUser(e.value as any)}
+            ref={dt} >
             <Column field="id" header="ID" bodyStyle={{textAlign: "center"}} sortable />
             <Column field="name" header="Name" body={nameBodyTemplate} sortable filter filterPlaceholder="Search by name" editor={textEditor} />
             <Column field="email" header="Email" sortable filter filterPlaceholder="Search by email" editor={textEditor} />
@@ -268,6 +315,7 @@ const AdminUsers = () => {
 
         <AddUserDialog visible={visible} onHide={() => setVisible(false)} onAdd={onAddUser} />
       </div>
+      <ContextMenu model={contextMenuItems} ref={cm} />
     </div>
   );
 };

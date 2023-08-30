@@ -19,14 +19,22 @@ export const deleteUploadHelper = async (uploadId: number) => {
 
     if (!upload) return;
 
-    // Delete files from storage
-    upload.files.forEach((file: File) => {
-        // Delete file from storage
-        fs.unlinkSync(path.join(__dirname, "..", "..", "uploads", upload.path, file.name));
-    });
+    // Delete upload folder with files from storage
+    fs.rm(path.join(__dirname, "..", "..", "uploads", upload.path), {
+        recursive: true,
+        }, (error) => {
+            if (error) {
+                console.log(error);
+            }
+        }
+    );
 
-    // Delete upload from storage
-    fs.rmdirSync(path.join(__dirname, "..", "..", "uploads", upload.path));
+    // Delete files from database
+    await prisma.file.deleteMany({
+        where: {
+            uploadId: uploadId,
+        },
+    });
 
     // Delete upload from database
     await prisma.upload.delete({
@@ -34,6 +42,29 @@ export const deleteUploadHelper = async (uploadId: number) => {
             id: uploadId,
         },
     });
+
+    // If user has no files left, delete user folder from storage using user.name
+    const user = await prisma.user.findUnique({
+        where: {
+            id: upload.userId,
+        },
+        include: {
+            uploads: true,
+        },
+    });
+
+    if (!user) return;
+
+    if (user.uploads.length === 0) {
+        fs.rm(path.join(__dirname, "..", "..", "uploads", user.name), {
+            recursive: true,
+            }, (error) => {
+                if (error) {
+                    console.log(error);
+                }
+            }
+        );
+    }
 };
 
 export default deleteUploadHelper;

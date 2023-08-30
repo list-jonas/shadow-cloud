@@ -13,7 +13,7 @@ export const postUpload = async (req: Request, res: Response) => {
 
     // @ts-ignore
     const files = req.files as Express.Multer.File[];
-    console.log(files);
+    
     const name = req.body.name;
 
     if (!name) return res.status(400).json({ error: "No name provided" });
@@ -83,8 +83,6 @@ export const getUpload = async (req: Request, res: Response) => {
   try {
     const user = req.params.user as string;
     const id = req.params.id as string;
-
-    console.log(user, id);
 
     // Get and add to view count
     const upload = await prisma.upload.update({

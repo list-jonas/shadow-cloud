@@ -61,7 +61,7 @@ const FileView = () => {
   }
 
   return (
-    <Content title={`${upload?.name}`}>
+    <Content title={`${upload ? upload.name : "Loading"}`}>
       {settings.email && <Button icon="material-symbols-outlined mat-icon-back" rounded raised outlined className="mb-4" onClick={() => navigate("/dashboard")} />}
       <Card title="Details" className="mb-4">
         <div className="grid">
