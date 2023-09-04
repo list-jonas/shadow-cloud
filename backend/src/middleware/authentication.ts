@@ -2,6 +2,7 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { User } from "@prisma/client";
+import { log } from "console";
 
 export const authenticateUser = () => {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -38,10 +39,13 @@ export const setTokenCookie = (req: Request, res: Response, user: User) => {
 
   const maxAge = 1000 * 60 * 60 * 24 * 5; // 5 days
 
-  if (req.headers.host === "127.0.0.1") {
+  console.log(req.headers.host);
+  
+
+  if (req.headers.host === "localhost:3000") {
     res.cookie("jwt", token, {
       maxAge,
-      domain: "127.0.0.1",
+      domain: "localhost",
       secure: false, // set to true if your using https
     });
   } else if (req.headers.host?.includes("danl.ddns.net")) {

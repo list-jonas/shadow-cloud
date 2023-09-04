@@ -47,7 +47,7 @@ export const postLogin = async (req: Request, res: Response) => {
         role: "ADMIN",
       };
 
-      setTokenCookie(res, user);
+      setTokenCookie(req, res, user);
 
       return res.status(201).json(responseObject);
     }
@@ -68,7 +68,7 @@ export const postLogin = async (req: Request, res: Response) => {
       return res.status(500).json({ error: "User not found" });
     }
 
-    setTokenCookie(res, user);
+    setTokenCookie(req, res, user);
 
     const responseObject = {
       message: "User successfully logged in",	
