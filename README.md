@@ -1,17 +1,29 @@
 # Shadow Share
 
-### Download Modules
-The project depends on several npm modules. Navigate to the frontend and backend directories and install them by running `npm i`. 
+## About the project
+Shadow Share is an intuitive and secure file-sharing platform designed to prioritize both ease of use and user privacy. Driven by the vision of simplified and confidential file-sharing, Shadow Share presents a seamless experience where users can effortlessly bundle multiple files and upload them to the platform.
 
-Prisma client also needs to be generated for the backend to interact with the database. You can do this with `npx prisma generate`.
+Upon uploading, users are immediately presented with a unique URL, linking them directly to their uploaded content. This direct-access approach ensures that users can swiftly navigate to their files and decide which particular files they want to download, giving them granular control over their data.
 
-```cmd
-cd ./frontend
-npm i
-cd ../backend
-npm i
-npx prisma generate
+A standout feature of Shadow Share is its commitment to user privacy. Unlike many mainstream file-sharing platforms where anyone can register, Shadow Share adopts a more exclusive approach. Each user account, with the exception of the admin account, has to be created manually. This manual creation process guarantees that only authorized individuals have access to the platform, dramatically enhancing the security of stored files.
+
+Moreover, administrators have the capability to assign maximum storage space on a per-user basis. This feature ensures optimal resource allocation, preventing any one user from overwhelming the system and ensuring fair distribution of storage capacities.
+
+> In an age where digital security is paramount and simplicity is sought after, Shadow Share stands as a beacon for those seeking a user-friendly yet ultra-private file-sharing solution. Whether it's for professional use, where confidential documents need to be shared, or for personal use, where one wants to ensure their files remain private, Shadow Share is the ideal platform.
+
+## Initial Setup
+### Initiate Docker Container
+To run the application in a production-like environment, you can use Docker. The Dockerfile and docker-compose files should be set up to create the necessary containers. Start them with the command:
+
+```docker
+docker-compose up --build
 ```
+Now the Website is accesible using port `3000`. [here](loclhost://3000)
+
+---
+
+### Admin user
+Upon your first visit to the website, you'll encounter a login prompt. Simply input your email address and password to auto-generate an admin account. All subsequent accounts require creation via user management.
 
 ## Start Project in `dev` Mode
 To start the application in development mode, navigate to the frontend and backend directories and run `npm run dev`.
@@ -37,12 +49,11 @@ When preparing for a production environment, it's necessary to build the fronten
 cd ./frontend
 npm run build
 ```
-
-### Initiate Docker Container
+### Rebuild Docker Container
 To run the application in a production-like environment, you can use Docker. The Dockerfile and docker-compose files should be set up to create the necessary containers. Start them with the command:
 
 ```docker
-docker-compose up
+docker-compose up --build
 ```
 Now the Website is accesible using port `3000`. [here](loclhost://3000)
 
