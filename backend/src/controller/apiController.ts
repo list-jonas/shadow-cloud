@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { File, PrismaClient, Upload } from "@prisma/client";
 import "dotenv/config";
 import path from "path";
 import deleteUploadHelper from "../helper/deleteUpload";
-import fs from "fs";
 
 const prisma = new PrismaClient();
 
@@ -113,9 +112,7 @@ export const getUploads = async (req: Request, res: Response) => {
     return res.status(200).json(uploads);
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .json({ error: "Something went wrong while fetching files" });
+    return res.status(500).json({ error: "Something went wrong while fetching files" });
   }
 };
 
@@ -125,28 +122,31 @@ export const getUpload = async (req: Request, res: Response) => {
     const id = req.params.id as string;
 
     // Get and add to view count
-    const upload = await prisma.upload.update({
-        where: {
-          path: user + "\\" + id,
-        },
-        data: {
-          views: {
-            increment: 1
-          }
-        },
-        include: {
-          files: true,
-        },
-    });
+    let upload;
+    try {
+      upload = await prisma.upload.update({
+          where: {
+            path: user + "\\" + id,
+          },
+          data: {
+            views: {
+              increment: 1
+            }
+          },
+          include: {
+            files: true,
+          },
+      })
+    } catch (error) {
+      return res.status(404).json({ error: "Upload not found" })
+    }
 
     if (!upload) return res.status(404).json({ error: "Upload not found" });
 
     return res.status(200).json(upload);
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .json({ error: "Something went wrong while fetching files" });
+    res.status(500).json({ error: "Something went wrong while fetching files" });
   }
 };
 
@@ -182,23 +182,26 @@ export const getDownload = async (req: Request, res: Response) => {
     const fileId = parseInt(req.params.fileId);
 
     // Get upload from database
-    const upload = await prisma.upload.update({
-      where: {
-        path: uploadUser + "\\" + uploadId,
-      },
-      data: {
-        downloadCount: {
-          increment: 1
-        }
-      },
-      include: {
-        files: true,
-      },
-    });
+    let upload;
+    try {
+      upload = await prisma.upload.update({
+        where: {
+          path: uploadUser + "\\" + uploadId,
+        },
+        data: {
+          downloadCount: {
+            increment: 1
+          }
+        },
+        include: {
+          files: true,
+        },
+      });
+    } catch (error) {
+      return res.status(404).json({ error: "Upload not found" })
+    }
 
-    if (!upload) return res.status(404).json({ error: "Upload not found" });
-
-    const file = upload.files.find((file) => file.id === fileId);
+    const file = upload.files.find((file: File) => file.id === fileId);
 
     if (!file) return res.status(404).json({ error: "File not found" });
 
@@ -209,7 +212,7 @@ export const getDownload = async (req: Request, res: Response) => {
     );
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Something went wrong while downloading" });
+    return res.status(500).json({ error: "Something went wrong while downloading" });
   }
 };
 
