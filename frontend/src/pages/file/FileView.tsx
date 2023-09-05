@@ -19,16 +19,19 @@ const FileView = () => {
   const { settings } = useSettingsContext();
 
   useEffect(() => {
+    console.log(`${apiRoutes.getUpload}/${user}/${id}`);
+    console.log(`${user}/${id}`);
+    
     axios.get<IUpload>(apiRoutes.getUpload + `/${user}/${id}`, { withCredentials: true })
-      .then((res: any) => {
-        setUpload(res.data);
-      })
-      .catch((error: any) => {
-        if (error.response.data.error) {
-          showError('Error', error.response.data.error);
-          navigate('/dashboard');
-        }
-      });
+    .then((res: any) => {
+      setUpload(res.data);
+    })
+    .catch((error: any) => {
+      if (error.response.data.error) {
+        showError('Error', error.response.data.error);
+        navigate('/dashboard');
+      }
+    });
   }
   , [user, id]);
 
