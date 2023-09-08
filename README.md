@@ -1,4 +1,4 @@
-# Shadow Share
+# Shadow Share V1.1
 
 ## About the project
 Shadow Share is an intuitive and secure file-sharing platform designed to prioritize both ease of use and user privacy. Driven by the vision of simplified and confidential file-sharing, Shadow Share presents a seamless experience where users can effortlessly bundle multiple files and upload them to the platform.
