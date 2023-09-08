@@ -306,7 +306,7 @@ const AdminUsers = () => {
             <Column field="email" header="Email" sortable filter filterPlaceholder="Search by email" editor={textEditor} />
             <Column field="role" header="Role" body={roleBodyTemplate} sortable editor={roleEditor} />
             <Column field="maxSpace" header="Max Space" headerStyle={{minWidth: "130px"}} body={maxSpaceBodyTemplate} sortable editor={maxSpaceEditor} />
-            <Column header="Dates" body={datesBodyTemplate} />
+            <Column header="Dates" body={datesBodyTemplate} headerStyle={{minWidth: "200px"}} />
             <Column rowEditor bodyStyle={{ textAlign: 'center', minWidth: "110px" }} />
           </DataTable>
         </Card>

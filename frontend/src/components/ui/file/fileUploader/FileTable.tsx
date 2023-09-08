@@ -91,7 +91,7 @@ const FileTable: React.FC<FileTableProps> = (props) => {
         size="small"
         style={{ width: "100%" }}
       >
-        <Column header="Icon" body={iconBodyTemplate} style={{maxWidth: "60px"}} />
+        <Column header="Icon" body={iconBodyTemplate} headerStyle={{maxWidth: "60px"}} />
         <Column header="Name" body={nameBodyTemplate} />
         <Column header="Type" body={typeBodyTemplate} />
         <Column header="Size" body={sizeBodyTemplate} />

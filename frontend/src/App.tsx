@@ -8,6 +8,7 @@ import '/src/assets/theme/mat-icon.css'
 import themesData, { getTheme } from "./data/themeData";
 import PrimeReact, { PrimeReactProvider } from "primereact/api";
 import React from "react";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 const Dashboard = React.lazy(() => import("./pages/dashboard/dashboard/Dashboard"));
 const NoPage = React.lazy(() => import("./pages/noPage/NoPage"));
@@ -39,7 +40,11 @@ function App() {
   
   return (
     <div className='App'>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={
+        <div style={{position: "fixed", top: 0, left: 0, display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", width: "100vw"}}>
+          <ProgressSpinner />
+        </div>
+      }>
         <PrimeReactProvider>
           <BrowserRouter>
             <Routes>
