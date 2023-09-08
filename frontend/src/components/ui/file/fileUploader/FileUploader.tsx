@@ -27,6 +27,7 @@ const FileUploader: React.FC<FileUploaderProps> = (props) => {
   const fileSelectRef = useRef<any>(null);
   const folderSelectRef = useRef<any>(null);
   const [downloadUrl, setDownloadUrl] = useState<string>('');
+  const navigator = window.navigator;
 
   const processFiles = (_files: File[]) => {
     let _validFiles: File[] = [];
