@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import apiRoutes from "../../../../routes/apiRoutes";
 import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
+import { Column, ColumnSortEvent } from "primereact/column";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "primereact/badge";
 import formatFileSize from "../../../../helper/formatFileSize";
@@ -11,6 +11,7 @@ import IUpload from "../../../../interfaces/IUpload";
 import redirectTo from "../../../../helper/redirectTo";
 import { ContextMenu } from "primereact/contextmenu";
 import { useToast } from "../../../../hooks/ToastHook";
+import DateTimeChips from "../../DateTimeChips/DateTimeChips";
 
 interface UploadedFilesProps {
   fileUploadCount?: number;
@@ -35,6 +36,27 @@ const UploadedFiles: React.FC<UploadedFilesProps> = (props) => {
       }
     )
   }, [fileUploadCount])
+
+  const calculateSize = (upload: IUpload) => {
+    return upload.files?.reduce((a, b) => a + b.size, 0) || 0;
+  };  
+
+  const sizeSorter = (e: ColumnSortEvent) => {
+    if (!e.order) {
+      return;
+    }
+
+    return e.data.sort((a: IUpload, b: IUpload) => {
+      const sizeA = calculateSize(a);
+      const sizeB = calculateSize(b);
+
+      if (e.order! > 0) { // Ascending order
+          return sizeA - sizeB;
+      } else { // Descending order
+          return sizeB - sizeA;
+      }
+    });
+  };  
 
   const contextMenuItems = [
     {
@@ -70,11 +92,11 @@ const UploadedFiles: React.FC<UploadedFilesProps> = (props) => {
   };
 
   const sizeBodyTemplate = (rowData: IUpload) => {
-    return <>{rowData.files && <Badge value={formatFileSize(rowData.files.reduce((a, b) => a + b.size, 0), settings.si)} />}</>;
+    return <>{rowData.files && <Badge value={formatFileSize(calculateSize(rowData), settings.si)} />}</>;
   };
 
   const createdAtBodyTemplate = (rowData: IUpload) => {
-    return <>{new Date(rowData.createdAt).toLocaleString()}</>;
+    return <DateTimeChips date={rowData.createdAt} />
   };
   
   return (
@@ -103,7 +125,7 @@ const UploadedFiles: React.FC<UploadedFilesProps> = (props) => {
         <Column field="createdAt" body={createdAtBodyTemplate} header="Uploaded" sortable />
         <Column field="downloadCount" header="Downloads" sortable />
         <Column field="views" header="Views" sortable />
-        <Column field="size" header="Size" body={sizeBodyTemplate} sortable />
+        <Column field="size" header="Size" body={sizeBodyTemplate} sortable sortFunction={sizeSorter} />
       </DataTable>
 
       <ContextMenu model={contextMenuItems} ref={cm} />
