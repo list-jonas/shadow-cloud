@@ -58,7 +58,7 @@ export const postUpload = async (req: Request, res: Response) => {
       data: {
         userId: currentUser.id,
         name: name,
-        path: dirPath,
+        path: dirPath.replace(/\\/g, "/"),
       },
     });
 
@@ -126,7 +126,7 @@ export const getUpload = async (req: Request, res: Response) => {
     try {
       upload = await prisma.upload.update({
           where: {
-            path: user + "\\" + id,
+            path: user + "/" + id,
           },
           data: {
             views: {
@@ -186,7 +186,7 @@ export const getDownload = async (req: Request, res: Response) => {
     try {
       upload = await prisma.upload.update({
         where: {
-          path: uploadUser + "\\" + uploadId,
+          path: uploadUser + "/" + uploadId,
         },
         data: {
           downloadCount: {
