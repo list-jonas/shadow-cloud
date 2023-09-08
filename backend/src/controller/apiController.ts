@@ -122,20 +122,17 @@ export const getUpload = async (req: Request, res: Response) => {
     const id = req.params.id as string;
 
     // Get and add to view count
+    console.log("getting upload: " + user + "\\" + id);
+    
     let upload;
     try {
-      upload = await prisma.upload.update({
-          where: {
-            path: user + "\\" + id,
-          },
-          data: {
-            views: {
-              increment: 1
-            }
-          },
-          include: {
-            files: true,
-          },
+      upload = await prisma.upload.findFirst({
+        where: {
+          path: user + "\\" + id,
+        },
+        include: {
+          files: true,
+        },
       })
     } catch (error) {
       return res.status(404).json({ error: "Upload not found" })
