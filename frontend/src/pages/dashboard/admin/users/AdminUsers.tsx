@@ -293,8 +293,6 @@ const AdminUsers = () => {
             selection={selectedUser as any}
             onSelectionChange={e => {
               setSelectedUser(e.value as any)
-              // @ts-ignore
-              cm.current?.show();
             }}
             contextMenuSelection={selectedUser as any}
             onContextMenu={e => {

@@ -10,7 +10,13 @@ import apiRoutes from '../../../../routes/apiRoutes';
 import { InputText } from 'primereact/inputtext';
 import routesData from '../../../../data/routesData';
 
-const FileUploader = () => {
+interface FileUploaderProps {
+  onUploadFinished?: () => void;
+}
+
+const FileUploader: React.FC<FileUploaderProps> = (props) => {
+  const { onUploadFinished } = props;
+
   const { showInfo, showError, showWarn } = useToast();
   const [totalSize, setTotalSize] = useState(0);
   const [name , setName] = useState<string>('');
@@ -172,6 +178,9 @@ const FileUploader = () => {
       // wait a second before resetting progress
       setTimeout(() => {
         setProgress(0);
+        if (onUploadFinished) {
+          onUploadFinished();
+        }
       }, 1000);
     }).catch((error: any) => {
       console.log(error);

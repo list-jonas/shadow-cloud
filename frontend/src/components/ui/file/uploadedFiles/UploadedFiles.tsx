@@ -12,7 +12,13 @@ import redirectTo from "../../../../helper/redirectTo";
 import { ContextMenu } from "primereact/contextmenu";
 import { useToast } from "../../../../hooks/ToastHook";
 
-const UploadedFiles = () => {
+interface UploadedFilesProps {
+  fileUploadCount?: number;
+}
+
+const UploadedFiles: React.FC<UploadedFilesProps> = (props) => {
+  const { fileUploadCount } = props;
+
   const [uploads, setUploads] = useState<IUpload[]>([])
   const [selectedUpload, setSelectedUpload] = useState<IUpload | null>(null);
   const navigate = useNavigate();
@@ -28,10 +34,16 @@ const UploadedFiles = () => {
         console.log(error)
       }
     )
-  }, [])
+  }, [fileUploadCount])
 
   const contextMenuItems = [
     {
+      label: 'View',
+      icon: 'material-symbols-outlined mat-icon-eye',
+      command: () => {
+        redirectTo(navigate, null, `/file/${selectedUpload!.path}`)
+      }
+    } ,{
       label: 'Delete',
       icon: 'material-symbols-outlined mat-icon-bin',
       command: () => {
@@ -50,7 +62,7 @@ const UploadedFiles = () => {
             }
           })
       }
-    },
+    }
   ];
 
   const nameBodyTemplate = (rowData: IUpload) => {
@@ -59,6 +71,10 @@ const UploadedFiles = () => {
 
   const sizeBodyTemplate = (rowData: IUpload) => {
     return <>{rowData.files && <Badge value={formatFileSize(rowData.files.reduce((a, b) => a + b.size, 0), settings.si)} />}</>;
+  };
+
+  const createdAtBodyTemplate = (rowData: IUpload) => {
+    return <>{new Date(rowData.createdAt).toLocaleString()}</>;
   };
   
   return (
@@ -69,8 +85,6 @@ const UploadedFiles = () => {
         style={{ width: "100%" }}
         onSelectionChange={e => {
           setSelectedUpload(e.value as any)
-          // @ts-ignore
-          cm.current?.show();
         }}
         contextMenuSelection={selectedUpload as any}
         onContextMenu={e => {
@@ -78,6 +92,7 @@ const UploadedFiles = () => {
           cm.current?.show(e.originalEvent);
         }}
         onContextMenuSelectionChange={e => setSelectedUpload(e.value as any)}
+        selection={selectedUpload as any}
         selectionMode="single"
         dataKey="id"
         metaKeySelection={false}
@@ -85,7 +100,7 @@ const UploadedFiles = () => {
         emptyMessage="No uploads found"
       >
         <Column field="name" header="Name" body={nameBodyTemplate} sortable />
-        <Column field="createdAt" header="Uploaded" sortable />
+        <Column field="createdAt" body={createdAtBodyTemplate} header="Uploaded" sortable />
         <Column field="downloadCount" header="Downloads" sortable />
         <Column field="views" header="Views" sortable />
         <Column field="size" header="Size" body={sizeBodyTemplate} sortable />

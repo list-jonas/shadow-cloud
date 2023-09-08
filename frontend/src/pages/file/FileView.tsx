@@ -19,9 +19,6 @@ const FileView = () => {
   const { settings } = useSettingsContext();
 
   useEffect(() => {
-    console.log(`${apiRoutes.getUpload}/${user}/${id}`);
-    console.log(`${user}/${id}`);
-    
     axios.get<IUpload>(apiRoutes.getUpload + `/${user}/${id}`, { withCredentials: true })
     .then((res: any) => {
       setUpload(res.data);
@@ -39,28 +36,9 @@ const FileView = () => {
     const updatedUpload = upload;
     updatedUpload!.downloadCount++;
     setUpload(updatedUpload);
-    
-    axios.get(apiRoutes.getDownload + `/${user}/${id}/${fileId}`, { withCredentials: true, responseType: 'blob' })
-      .then((res: any) => {
-        // Convert the data to a blob
-        const blob = new Blob([res.data], { type: res.headers['content-type'] });
 
-        // Create a link element
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-
-        // Set a file name if you have one. This step is optional.
-        // link.download = 'filename.ext';
-
-        // Append the link to the document body and click it
-        document.body.appendChild(link);
-        link.click();
-
-        // Clean up: remove the link and revoke the object URL
-        document.body.removeChild(link);
-        URL.revokeObjectURL(link.href);
-      }
-    )
+    // set page url to download url apiRoutes.getDownload + `/${user}/${id}/${fileId}`
+    document.location.href = apiRoutes.getDownload + `/${user}/${id}/${fileId}`;
   }
 
   return (

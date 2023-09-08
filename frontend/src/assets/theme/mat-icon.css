@@ -268,3 +268,7 @@
 .mat-icon-light::before {
   content: "light_mode";
 }
+
+.mat-icon-eye::before {
+  content: "visibility";
+}
