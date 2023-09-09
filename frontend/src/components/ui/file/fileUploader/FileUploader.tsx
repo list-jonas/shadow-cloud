@@ -226,19 +226,24 @@ const FileUploader: React.FC<FileUploaderProps> = (props) => {
       <div className='file-uploader__header'>
         <div className='grid'>
           <div className='col' style={{maxWidth: "min-content"}}>
-            <Button icon="material-symbols-outlined mat-icon-document" onClick={onFileSelect} disabled={progress !== 0} />
+            <Button icon="material-symbols-outlined mat-icon-document" onClick={onFileSelect} disabled={progress !== 0} 
+                    tooltip="Documents" tooltipOptions={{ position: 'bottom' }}/>
           </div>
           <div className='col' style={{maxWidth: "min-content"}}>
-            <Button icon="material-symbols-outlined mat-icon-folder" onClick={onFolderSelect} disabled={progress !== 0} />
+            <Button icon="material-symbols-outlined mat-icon-folder" onClick={onFolderSelect} disabled={progress !== 0}
+                    tooltip="Folder" tooltipOptions={{ position: 'bottom' }}/>
           </div>
           <div className='col' style={{maxWidth: "min-content"}}>
-            <Button icon="material-symbols-outlined mat-icon-upload" onClick={onUpload} disabled={files.length === 0 || name.trim() === "" || progress !== 0} />
+            <Button icon="material-symbols-outlined mat-icon-upload" onClick={onUpload} disabled={files.length === 0 || name.trim() === "" || progress !== 0}
+                    tooltip="Upload" tooltipOptions={{ position: 'bottom' }}/>
           </div>
           <div className='col' style={{maxWidth: "min-content"}}>
-            <Button icon="material-symbols-outlined mat-icon-close" onClick={onClear} disabled={files.length === 0 || progress !== 0} />
+            <Button icon="material-symbols-outlined mat-icon-close" onClick={onClear} disabled={files.length === 0 || progress !== 0}
+                    tooltip="Clear" tooltipOptions={{ position: 'bottom' }}/>
           </div>
           <div className='col'>
-            <InputText value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" required className='file-uploader__header__name' style={{minWidth: "150px"}} disabled={progress !== 0} />
+            <InputText value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" required className='file-uploader__header__name' style={{minWidth: "150px"}} disabled={progress !== 0}
+                       tooltip="Upload name" tooltipOptions={{ position: 'bottom' }}/>
           </div>
         </div>
       </div>

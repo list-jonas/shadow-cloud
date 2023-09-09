@@ -15,9 +15,9 @@ import formatFileSize from '../../../../helper/formatFileSize';
 import { useToast } from '../../../../hooks/ToastHook';
 import { useSettingsContext } from '../../../../hooks/SettingsHook';
 import AddUserDialog from './AddUserDialog';
-import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
 import { ContextMenu } from 'primereact/contextmenu';
 import { DomHandler } from 'primereact/utils';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 
 const AdminUsers = () => {
@@ -202,6 +202,16 @@ const AdminUsers = () => {
     setGlobalFilterValue(value);
   };
 
+  const confirmDeletion = () => {
+    confirmDialog({
+      message: 'Do you want to delete this user?',
+      header: 'Delete Confirmation',
+      icon: 'material-symbols-outlined mat-icon-info',
+      acceptClassName: 'p-button-danger',
+      accept: acceptDeletion
+    });
+  };
+
   const acceptDeletion = () => {
     axios.delete(`${adminRoutes.deleteUser}/${selectedUser!.id}`, { withCredentials: true })
       .then(res => {
@@ -222,23 +232,17 @@ const AdminUsers = () => {
       });
   };
 
-  const confirmDeletion = (event: any) => {
-    confirmPopup({
-        target: event.currentTarget,
-        message: `Are you sure you want to delete ${selectedUser?.name}?`,
-        icon: 'pi pi-exclamation-triangle',
-        accept: acceptDeletion
-    });
-  };
-
   const header = () => (
     <div className="flex justify-content-end">
-      <ConfirmPopup />
-      <Button icon="material-symbols-outlined mat-icon-bin" label="Delete User" severity='danger' className='mr-2' outlined disabled={selectedUser === null} onClick={confirmDeletion} />
-      <Button icon="material-symbols-outlined mat-icon-plus" label="Add User" severity='success' className='mr-2' onClick={() => setVisible(true)} />
+      <ConfirmDialog />
+      <Button icon="material-symbols-outlined mat-icon-bin" severity='danger' className='mr-2' outlined disabled={selectedUser === null} onClick={confirmDeletion} 
+              tooltip='Delete user' tooltipOptions={{ position: "bottom" }} />
+      <Button icon="material-symbols-outlined mat-icon-plus" severity='success' className='mr-2' onClick={() => setVisible(true)} disabled={loading}
+              tooltip='Add user' tooltipOptions={{ position: "bottom" }} />
       <span className="p-input-icon-left">
         <i className="material-symbols-outlined mat-icon-search" />
-        <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
+        <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" 
+                   tooltip='Search' tooltipOptions={{ position: "bottom" }}/>
       </span>
     </div>
   );
