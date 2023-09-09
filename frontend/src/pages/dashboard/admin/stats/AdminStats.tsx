@@ -53,7 +53,7 @@ const AdminStats = () => {
   return (
     <Content title="Stats" className="admin-stats">
       <div className="grid gap-4 p-1">
-        <Card className="col p-1" ref={userCountRef}>
+        <Card className="col p-1" ref={userCountRef} style={{minWidth: "max-content"}}>
           <div className="grid">
             <span className="material-symbols-outlined col text-4xl">
               group
@@ -66,7 +66,7 @@ const AdminStats = () => {
             </span>
           </div>
         </Card>
-        <Card className="col p-1" ref={uploadCountRef}>
+        <Card className="col p-1" ref={uploadCountRef} style={{minWidth: "max-content"}}>
           <div className="grid">
             <span className="material-symbols-outlined col text-4xl">
               folder
@@ -79,7 +79,7 @@ const AdminStats = () => {
             </span>
           </div>
         </Card>
-        <Card className="col p-1" ref={fileCountRef}>
+        <Card className="col p-1" ref={fileCountRef} style={{minWidth: "max-content"}}>
           <div className="grid">
             <span className="material-symbols-outlined col text-4xl">
               upload_file
