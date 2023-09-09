@@ -12,7 +12,7 @@ services:
       POSTGRES_PASSWORD: "postgres"
       POSTGRES_DB: "shadow-share"
       DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public"
-      JWT_SECRET: "P@Qr#Vt!As*rDH6#NPL*m2u!ZEG#JWn5QgZC32q2aawGt2mzU5wMg^adHbGTaB322jRB!8LZDF4AUV8P8r7&NMMSr5Sr#s*E*CTK"
+      JWT_SECRET: "P@Qr#Vt!As*rDH6#NPL*m2u!ZEG#JWn5QgZC32q2aawGt2mzU5wMg^adHbGTaB322jRB!8LZDF4AUV8P8r7&NMMSr5Sr#s*E*CTK" 
     container_name: ${COMPOSE_PROJECT_NAME}-backend
     build:
       dockerfile: ./backend/Dockerfile_backend
@@ -20,6 +20,7 @@ services:
     image: ${COMPOSE_PROJECT_NAME}:${COMPOSE_PROJECT_NAME}-backend
     restart: on-failure
     volumes:
+      - ./backend/uploads:/usr/src/app/uploads
       - ./frontend/dist:/usr/src/app/dist
     ports:
       - 3000:3000
