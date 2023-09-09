@@ -247,7 +247,7 @@ const FileUploader: React.FC<FileUploaderProps> = (props) => {
           </div>
         </div>
       </div>
-      <ProgressBar value={progress} displayValueTemplate={() => ""} mode={processing ? "indeterminate" : "determinate"} className='file-uploader__divider' />
+      <ProgressBar value={progress} displayValueTemplate={() => ""} mode={processing ? "indeterminate" : "determinate"} className='file-uploader__divider mt-1' />
       <div className='file-uploader__body' onDrop={onDrop} onDragOver={onDragOver} >
         <div className='grid'>
           {files.length === 0 ? (

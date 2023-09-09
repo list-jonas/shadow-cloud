@@ -18,6 +18,7 @@ import AddUserDialog from './AddUserDialog';
 import { ContextMenu } from 'primereact/contextmenu';
 import { DomHandler } from 'primereact/utils';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import Content from '../../../../components/layout/Content/Content';
 
 
 const AdminUsers = () => {
@@ -276,49 +277,46 @@ const AdminUsers = () => {
   };
   
   return (
-    <div className='admin' style={{ display: "flex", justifyContent: "center" }}>
-      <div style={{ maxWidth: "1250px", width: "100%" }}>
-        <h1 className="text-900 font-bold text-6xl mb-4 text-center">Users</h1>
-        <Card className='mt-4'>
-          <DataTable
-            value={users}
-            editMode="row"
-            dataKey="id"
-            onRowEditComplete={onRowEditComplete}
-            scrollable
-            filters={filters}
-            loading={loading}
-            globalFilterFields={['id', 'name', 'email', 'role', 'maxSpace']}
-            header={header}
-            emptyMessage="No users found."
-            size='small'
-            metaKeySelection={false}
-            selectionMode='single'
-            selection={selectedUser as any}
-            onSelectionChange={e => {
-              setSelectedUser(e.value as any)
-            }}
-            contextMenuSelection={selectedUser as any}
-            onContextMenu={e => {
-              setSelectedUser(e.data as any)
-              cm.current?.show(e.originalEvent);
-            }}
-            onContextMenuSelectionChange={e => setSelectedUser(e.value as any)}
-            ref={dt} >
-            <Column field="id" header="ID" bodyStyle={{textAlign: "center"}} sortable />
-            <Column field="name" header="Name" body={nameBodyTemplate} sortable filter filterPlaceholder="Search by name" editor={textEditor} />
-            <Column field="email" header="Email" sortable filter filterPlaceholder="Search by email" editor={textEditor} />
-            <Column field="role" header="Role" body={roleBodyTemplate} sortable editor={roleEditor} />
-            <Column field="maxSpace" header="Max Space" headerStyle={{minWidth: "130px"}} body={maxSpaceBodyTemplate} sortable editor={maxSpaceEditor} />
-            <Column header="Dates" body={datesBodyTemplate} headerStyle={{minWidth: "200px"}} />
-            <Column rowEditor bodyStyle={{ textAlign: 'center', minWidth: "110px" }} />
-          </DataTable>
-        </Card>
+    <Content title="Users" className='users'>
+      <Card className='mt-4'>
+        <DataTable
+          value={users}
+          editMode="row"
+          dataKey="id"
+          onRowEditComplete={onRowEditComplete}
+          scrollable
+          filters={filters}
+          loading={loading}
+          globalFilterFields={['id', 'name', 'email', 'role', 'maxSpace']}
+          header={header}
+          emptyMessage="No users found."
+          size='small'
+          metaKeySelection={false}
+          selectionMode='single'
+          selection={selectedUser as any}
+          onSelectionChange={e => {
+            setSelectedUser(e.value as any)
+          }}
+          contextMenuSelection={selectedUser as any}
+          onContextMenu={e => {
+            setSelectedUser(e.data as any)
+            cm.current?.show(e.originalEvent);
+          }}
+          onContextMenuSelectionChange={e => setSelectedUser(e.value as any)}
+          ref={dt} >
+          <Column field="id" header="ID" bodyStyle={{textAlign: "center"}} sortable />
+          <Column field="name" header="Name" body={nameBodyTemplate} sortable filter filterPlaceholder="Search by name" editor={textEditor} />
+          <Column field="email" header="Email" sortable filter filterPlaceholder="Search by email" editor={textEditor} />
+          <Column field="role" header="Role" body={roleBodyTemplate} sortable editor={roleEditor} />
+          <Column field="maxSpace" header="Max Space" headerStyle={{minWidth: "130px"}} body={maxSpaceBodyTemplate} sortable editor={maxSpaceEditor} />
+          <Column header="Dates" body={datesBodyTemplate} headerStyle={{minWidth: "200px"}} />
+          <Column rowEditor bodyStyle={{ textAlign: 'center', minWidth: "110px" }} />
+        </DataTable>
+      </Card>
 
-        <AddUserDialog visible={visible} onHide={() => setVisible(false)} onAdd={onAddUser} />
-      </div>
+      <AddUserDialog visible={visible} onHide={() => setVisible(false)} onAdd={onAddUser} />
       <ContextMenu model={contextMenuItems} ref={cm} />
-    </div>
+    </Content>
   );
 };
 
