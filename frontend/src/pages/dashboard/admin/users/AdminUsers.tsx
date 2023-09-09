@@ -75,7 +75,7 @@ const AdminUsers = () => {
       icon: 'material-symbols-outlined mat-icon-bin',
       command: (event: any) => {
         setSelectedUser(event.item.rowData);
-        confirmDeletion(event.originalEvent);
+        confirmDeletion();
       }
     },
     {
