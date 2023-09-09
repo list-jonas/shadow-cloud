@@ -7,6 +7,7 @@ import { useToast } from "../../../../hooks/ToastHook";
 import UserFlowChart from "./UserFlowChart";
 import UploadFlowChart from "./UploadFlowChart";
 import { Tooltip } from "primereact/tooltip";
+import formatFileSize from "../../../../helper/formatFileSize";
 
 export interface ITimeSeriesData {
   date: string; // formatted as YYYY-MM-DD
@@ -17,6 +18,8 @@ export interface IAdminStats {
   userCount: number;
   uploadCount: number;
   fileCount: number;
+  viewCount: number;
+  totalSize: number;
   userflow: ITimeSeriesData[];
   uploadflow: ITimeSeriesData[];
 }
@@ -26,12 +29,16 @@ const AdminStats = () => {
     userCount: 0,
     uploadCount: 0,
     fileCount: 0,
+    viewCount: 0,
+    totalSize: 0,
     userflow: [],
     uploadflow: [],
   });
   const userCountRef = useRef(null);
   const uploadCountRef = useRef(null);
   const fileCountRef = useRef(null);
+  const viewCountRef = useRef(null);
+  const totalSizeRef = useRef(null);
 
   const { showError } = useToast();
 
@@ -79,6 +86,16 @@ const AdminStats = () => {
             </span>
           </div>
         </Card>
+        <Card className="col p-1" ref={viewCountRef} style={{minWidth: "max-content"}}>
+          <div className="grid">
+            <span className="material-symbols-outlined col text-4xl">
+              visibility
+            </span>
+            <span className="col text-4xl font-semibold" style={{ color: "var(--primary-color)" }}>
+              {stats.viewCount}
+            </span>
+          </div>
+        </Card>
         <Card className="col p-1" ref={fileCountRef} style={{minWidth: "max-content"}}>
           <div className="grid">
             <span className="material-symbols-outlined col text-4xl">
@@ -89,6 +106,16 @@ const AdminStats = () => {
               style={{ color: "var(--primary-color)" }}
             >
               {stats.fileCount}
+            </span>
+          </div>
+        </Card>
+        <Card className="col p-1" ref={totalSizeRef} style={{minWidth: "max-content"}}>
+          <div className="grid">
+            <span className="material-symbols-outlined col text-4xl">
+              storage
+            </span>
+            <span className="col text-4xl font-semibold" style={{ color: "var(--primary-color)", minWidth: "max-content" }}>
+              {formatFileSize(stats.totalSize, true)}
             </span>
           </div>
         </Card>
@@ -112,6 +139,16 @@ const AdminStats = () => {
       <Tooltip
         target={fileCountRef.current!}
         content="Total number of files"
+        position="bottom"
+      />
+      <Tooltip
+        target={viewCountRef.current!}
+        content="Total number of views"
+        position="bottom"
+      />
+      <Tooltip
+        target={totalSizeRef.current!}
+        content="Total size of all files"
         position="bottom"
       />
     </Content>

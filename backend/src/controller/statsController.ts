@@ -11,6 +11,8 @@ interface IAdminStats {
   userCount: number;
   uploadCount: number;
   fileCount: number;
+  viewCount: number;
+  totalSize: number;
   userflow: ITimeSeriesData[];
   uploadflow: ITimeSeriesData[];
 }
@@ -27,6 +29,24 @@ export const getStats = async (req: Request, res: Response) => {
     const userCount = await prisma.user.count();
     const uploadCount = await prisma.upload.count();
     const fileCount = await prisma.file.count();
+
+    // Sum all views of all uploads
+    const viewCount = (await prisma.upload.aggregate({
+      _sum: {
+        views: true,
+      },
+    }))._sum.views;
+
+    if (!viewCount) return res.status(500).json({ error: "Failed to fetch stats" });
+
+    // Sum all sizes of all files
+    const totalSize = ((await prisma.file.aggregate({
+      _sum: {
+        size: true,
+      },
+    }))._sum.size ?? 0);
+
+    if (!totalSize) return res.status(500).json({ error: "Failed to fetch stats" });
 
     const userflow: ITimeSeriesData[] = [];
     const uploadflow: ITimeSeriesData[] = [];
@@ -65,6 +85,8 @@ export const getStats = async (req: Request, res: Response) => {
       userCount,
       uploadCount,
       fileCount,
+      viewCount,
+      totalSize,
       userflow,
       uploadflow,
     };
