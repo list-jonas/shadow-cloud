@@ -8,6 +8,7 @@ import UserFlowChart from "./UserFlowChart";
 import UploadFlowChart from "./UploadFlowChart";
 import { Tooltip } from "primereact/tooltip";
 import formatFileSize from "../../../../helper/formatFileSize";
+import { useSettingsContext } from "../../../../hooks/SettingsHook";
 
 export interface ITimeSeriesData {
   date: string; // formatted as YYYY-MM-DD
@@ -41,6 +42,7 @@ const AdminStats = () => {
   const totalSizeRef = useRef(null);
 
   const { showError } = useToast();
+  const { settings } = useSettingsContext();
 
   useEffect(() => {
     axios
@@ -115,7 +117,7 @@ const AdminStats = () => {
               storage
             </span>
             <span className="col text-4xl font-semibold" style={{ color: "var(--primary-color)", minWidth: "max-content" }}>
-              {formatFileSize(stats.totalSize, true)}
+              {formatFileSize(stats.totalSize, settings.si)}
             </span>
           </div>
         </Card>
