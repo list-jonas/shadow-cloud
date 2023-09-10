@@ -32,7 +32,7 @@ export const postLogin = async (req: Request, res: Response) => {
       // Create a new login for the user
       const user = await prisma.user.create({
         data: {
-          email: email,
+          email: (email as string).toLocaleLowerCase(),
           name: "admin",
           password: hashedPassword,
           maxSpace: 0,
@@ -53,7 +53,8 @@ export const postLogin = async (req: Request, res: Response) => {
     }
 
 
-    const login = await prisma.user.findFirst({ where: { email: email } });
+    const login = await prisma.user.findFirst({ where: { email: (email as string).toLocaleLowerCase() } });
+
     if (!login) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
@@ -72,7 +73,7 @@ export const postLogin = async (req: Request, res: Response) => {
 
     const responseObject = {
       message: "User successfully logged in",	
-      email: login.email,
+      email: login.email.toLocaleLowerCase(),
       username: login.name,
       role: login.role,
     };

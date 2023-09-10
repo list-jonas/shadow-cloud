@@ -40,8 +40,7 @@ const AdminUsers = () => {
   const cm = useRef<ContextMenu>(null);
   const dt = useRef<any>(null);
 
-
-  useEffect(() => {
+  const updateUsers = () => {
     axios.get<IUser[]>(adminRoutes.getUsers, { withCredentials: true})
       .then(res => {
         setUsers(res.data.sort((a, b) => a.id! - b.id!))
@@ -55,6 +54,10 @@ const AdminUsers = () => {
           showError('Error', 'User data could not be fetched.')
         }
       })
+  }
+
+  useEffect(() => {
+    updateUsers();
   }, []);
 
   const contextMenuItems = [
@@ -89,6 +92,7 @@ const AdminUsers = () => {
   ];
 
   const onAddUser = (user: IUser) => {
+    setVisible(false);
     axios.post(adminRoutes.addUser, {
       name: user.name,
       email: user.email,
@@ -103,6 +107,7 @@ const AdminUsers = () => {
           showInfo('Success', 'User added successfully.')
         }
         setUsers([...users, user])
+        updateUsers();
       })
       .catch(err => {
         if (err.response && err.response.data.error) {
@@ -141,6 +146,7 @@ const AdminUsers = () => {
         } else {
           showInfo('Success', 'User data updated successfully.')
         }
+        updateUsers();
       })
       .catch(err => {
         if (err.response && err.response.data.error) {
