@@ -18,7 +18,7 @@ To run the application in a production-like environment, you can use Docker. The
 ```docker
 docker-compose up --build
 ```
-Now the Website is accesible using port `3000`. [here](loclhost://3000)
+Now the Website is accessible using port `3000`. [here](loclhost://3000)
 
 ---
 
@@ -55,7 +55,7 @@ To run the application in a production-like environment, you can use Docker. The
 ```docker
 docker-compose up --build
 ```
-Now the Website is accesible using port `3000`. [here](loclhost://3000)
+Now the Website is accessible using port `3000`. [here](loclhost://3000)
 
 ---
 ## About the Technology Stack

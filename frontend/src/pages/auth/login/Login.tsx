@@ -53,7 +53,7 @@ const Login = () => {
   return (
     <div className='login' style={{display: "flex", justifyContent: "center"}}>
       <div style={{maxWidth: "500px", minWidth: "200px", width: "100%"}}>
-        <h1 className='mt-5 pt-5 font-weight-bold' style={{textAlign: "center"}}>Shadow Cloud</h1>
+        <h1 className='mt-5 pt-5 font-weight-bold' style={{textAlign: "center"}}>Shadow Share</h1>
         <Card className='mt-5' title='Login'>
           <Divider />
           <form onSubmit={(e) => e.preventDefault()}>
