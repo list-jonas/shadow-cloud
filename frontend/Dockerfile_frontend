@@ -1,5 +1,5 @@
-# Use specific version of node
-FROM node:18.17.0-alpine3.18 
+# Get bun
+FROM oven/bun
 
 # Create app directory
 RUN mkdir -p /usr/src/app
@@ -11,8 +11,8 @@ WORKDIR /usr/src/app
 COPY ./frontend/package*.json /usr/src/app/
 
 # Install typescript and node modules
-RUN npm install typescript -g 
-RUN npm install
+RUN bun install typescript -g 
+RUN bun install
 
 # Copy the entire frontend directory
 COPY ./frontend/ /usr/src/app
@@ -21,7 +21,6 @@ COPY ./frontend/ /usr/src/app
 ENV VITE_REACT_APP_BASE_URL=https://lsag-financial-pangea.lsag.net
 
 # Build the app
-# RUN npm run build
+# RUN bun run build
 
-
-CMD [ "npm", "run", "build" ]
+CMD [ "bun", "run", "build" ]

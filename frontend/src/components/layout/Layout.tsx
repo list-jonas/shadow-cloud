@@ -11,7 +11,11 @@ const Layout = () => {
       <AuthWrapper>
         <Navbar />
         <div className='layout-content'>
-          <Suspense fallback={<ProgressSpinner />}>
+          <Suspense fallback={
+            <div style={{position: "absolute", top: 0, left: 0, display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", width: "100vw"}}>
+              <ProgressSpinner />
+            </div>
+          }>
             <Outlet />
           </Suspense>
         </div>

@@ -11,7 +11,7 @@ const Content: React.FC<ContentProps> = (props) => {
 
   return (
     <div style={{display: "flex", justifyContent: "center"}}>
-      <div style={{width: "100%", maxWidth: "1200px"}} >
+      <div style={{width: "100%", maxWidth: "1500px"}} >
         <h1 style={{textAlign: "center"}}>{title}</h1>
         <div {...options}>
           { children }

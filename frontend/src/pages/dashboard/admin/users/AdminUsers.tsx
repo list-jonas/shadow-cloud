@@ -15,9 +15,10 @@ import formatFileSize from '../../../../helper/formatFileSize';
 import { useToast } from '../../../../hooks/ToastHook';
 import { useSettingsContext } from '../../../../hooks/SettingsHook';
 import AddUserDialog from './AddUserDialog';
-import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
 import { ContextMenu } from 'primereact/contextmenu';
 import { DomHandler } from 'primereact/utils';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import Content from '../../../../components/layout/Content/Content';
 
 
 const AdminUsers = () => {
@@ -39,8 +40,7 @@ const AdminUsers = () => {
   const cm = useRef<ContextMenu>(null);
   const dt = useRef<any>(null);
 
-
-  useEffect(() => {
+  const updateUsers = () => {
     axios.get<IUser[]>(adminRoutes.getUsers, { withCredentials: true})
       .then(res => {
         setUsers(res.data.sort((a, b) => a.id! - b.id!))
@@ -54,6 +54,10 @@ const AdminUsers = () => {
           showError('Error', 'User data could not be fetched.')
         }
       })
+  }
+
+  useEffect(() => {
+    updateUsers();
   }, []);
 
   const contextMenuItems = [
@@ -75,7 +79,7 @@ const AdminUsers = () => {
       icon: 'material-symbols-outlined mat-icon-bin',
       command: (event: any) => {
         setSelectedUser(event.item.rowData);
-        confirmDeletion(event.originalEvent);
+        confirmDeletion();
       }
     },
     {
@@ -88,6 +92,7 @@ const AdminUsers = () => {
   ];
 
   const onAddUser = (user: IUser) => {
+    setVisible(false);
     axios.post(adminRoutes.addUser, {
       name: user.name,
       email: user.email,
@@ -102,6 +107,7 @@ const AdminUsers = () => {
           showInfo('Success', 'User added successfully.')
         }
         setUsers([...users, user])
+        updateUsers();
       })
       .catch(err => {
         if (err.response && err.response.data.error) {
@@ -140,6 +146,7 @@ const AdminUsers = () => {
         } else {
           showInfo('Success', 'User data updated successfully.')
         }
+        updateUsers();
       })
       .catch(err => {
         if (err.response && err.response.data.error) {
@@ -202,6 +209,16 @@ const AdminUsers = () => {
     setGlobalFilterValue(value);
   };
 
+  const confirmDeletion = () => {
+    confirmDialog({
+      message: 'Do you want to delete this user?',
+      header: 'Delete Confirmation',
+      icon: 'material-symbols-outlined mat-icon-info',
+      acceptClassName: 'p-button-danger',
+      accept: acceptDeletion
+    });
+  };
+
   const acceptDeletion = () => {
     axios.delete(`${adminRoutes.deleteUser}/${selectedUser!.id}`, { withCredentials: true })
       .then(res => {
@@ -222,23 +239,17 @@ const AdminUsers = () => {
       });
   };
 
-  const confirmDeletion = (event: any) => {
-    confirmPopup({
-        target: event.currentTarget,
-        message: `Are you sure you want to delete ${selectedUser?.name}?`,
-        icon: 'pi pi-exclamation-triangle',
-        accept: acceptDeletion
-    });
-  };
-
   const header = () => (
     <div className="flex justify-content-end">
-      <ConfirmPopup />
-      <Button icon="material-symbols-outlined mat-icon-bin" label="Delete User" severity='danger' className='mr-2' outlined disabled={selectedUser === null} onClick={confirmDeletion} />
-      <Button icon="material-symbols-outlined mat-icon-plus" label="Add User" severity='success' className='mr-2' onClick={() => setVisible(true)} />
+      <ConfirmDialog />
+      <Button icon="material-symbols-outlined mat-icon-bin" severity='danger' className='mr-2' outlined disabled={selectedUser === null} onClick={confirmDeletion} 
+              tooltip='Delete user' tooltipOptions={{ position: "bottom" }} />
+      <Button icon="material-symbols-outlined mat-icon-plus" severity='success' className='mr-2' onClick={() => setVisible(true)} disabled={loading}
+              tooltip='Add user' tooltipOptions={{ position: "bottom" }} />
       <span className="p-input-icon-left">
         <i className="material-symbols-outlined mat-icon-search" />
-        <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
+        <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" 
+                   tooltip='Search' tooltipOptions={{ position: "bottom" }}/>
       </span>
     </div>
   );
@@ -272,49 +283,46 @@ const AdminUsers = () => {
   };
   
   return (
-    <div className='admin' style={{ display: "flex", justifyContent: "center" }}>
-      <div style={{ maxWidth: "1250px", width: "100%" }}>
-        <h1 className="text-900 font-bold text-6xl mb-4 text-center">Users</h1>
-        <Card className='mt-4'>
-          <DataTable
-            value={users}
-            editMode="row"
-            dataKey="id"
-            onRowEditComplete={onRowEditComplete}
-            scrollable
-            filters={filters}
-            loading={loading}
-            globalFilterFields={['id', 'name', 'email', 'role', 'maxSpace']}
-            header={header}
-            emptyMessage="No users found."
-            size='small'
-            metaKeySelection={false}
-            selectionMode='single'
-            selection={selectedUser as any}
-            onSelectionChange={e => {
-              setSelectedUser(e.value as any)
-            }}
-            contextMenuSelection={selectedUser as any}
-            onContextMenu={e => {
-              setSelectedUser(e.data as any)
-              cm.current?.show(e.originalEvent);
-            }}
-            onContextMenuSelectionChange={e => setSelectedUser(e.value as any)}
-            ref={dt} >
-            <Column field="id" header="ID" bodyStyle={{textAlign: "center"}} sortable />
-            <Column field="name" header="Name" body={nameBodyTemplate} sortable filter filterPlaceholder="Search by name" editor={textEditor} />
-            <Column field="email" header="Email" sortable filter filterPlaceholder="Search by email" editor={textEditor} />
-            <Column field="role" header="Role" body={roleBodyTemplate} sortable editor={roleEditor} />
-            <Column field="maxSpace" header="Max Space" headerStyle={{minWidth: "130px"}} body={maxSpaceBodyTemplate} sortable editor={maxSpaceEditor} />
-            <Column header="Dates" body={datesBodyTemplate} />
-            <Column rowEditor bodyStyle={{ textAlign: 'center', minWidth: "110px" }} />
-          </DataTable>
-        </Card>
+    <Content title="Users" className='users'>
+      <Card className='mt-4'>
+        <DataTable
+          value={users}
+          editMode="row"
+          dataKey="id"
+          onRowEditComplete={onRowEditComplete}
+          scrollable
+          filters={filters}
+          loading={loading}
+          globalFilterFields={['id', 'name', 'email', 'role', 'maxSpace']}
+          header={header}
+          emptyMessage="No users found."
+          size='small'
+          metaKeySelection={false}
+          selectionMode='single'
+          selection={selectedUser as any}
+          onSelectionChange={e => {
+            setSelectedUser(e.value as any)
+          }}
+          contextMenuSelection={selectedUser as any}
+          onContextMenu={e => {
+            setSelectedUser(e.data as any)
+            cm.current?.show(e.originalEvent);
+          }}
+          onContextMenuSelectionChange={e => setSelectedUser(e.value as any)}
+          ref={dt} >
+          <Column field="id" header="ID" bodyStyle={{textAlign: "center"}} sortable />
+          <Column field="name" header="Name" body={nameBodyTemplate} sortable filter filterPlaceholder="Search by name" editor={textEditor} />
+          <Column field="email" header="Email" sortable filter filterPlaceholder="Search by email" editor={textEditor} />
+          <Column field="role" header="Role" body={roleBodyTemplate} sortable editor={roleEditor} />
+          <Column field="maxSpace" header="Max Space" headerStyle={{minWidth: "130px"}} body={maxSpaceBodyTemplate} sortable editor={maxSpaceEditor} />
+          <Column header="Dates" body={datesBodyTemplate} headerStyle={{minWidth: "200px"}} />
+          <Column rowEditor bodyStyle={{ textAlign: 'center', minWidth: "110px" }} />
+        </DataTable>
+      </Card>
 
-        <AddUserDialog visible={visible} onHide={() => setVisible(false)} onAdd={onAddUser} />
-      </div>
+      <AddUserDialog visible={visible} onHide={() => setVisible(false)} onAdd={onAddUser} />
       <ContextMenu model={contextMenuItems} ref={cm} />
-    </div>
+    </Content>
   );
 };
 

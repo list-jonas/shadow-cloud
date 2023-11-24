@@ -13,11 +13,16 @@ const NoPage = () => {
   }
 
   return (
-    <div className='no-page container'>
-      <h1 className="text-900 font-bold text-6xl mt-4 mb-4 text-center">Page not found</h1>
-      <Button label="Back" icon="material-symbols-outlined mat-icon-back" onClick={goBack} />
-      <br />
-      <Button label="Dashboard" icon="material-symbols-outlined mat-icon-back" onClick={goToDashboard} />
+    <div className='no-page container flex align-items-center justify-content-center w-screen h-screen fixed'>
+      <div>
+        <p className="text-center font-semibold mb-1" style={{color: "var(--primary-color)"}}>404 Error</p>
+        <h1 className="font-bold text-6xl mt-2 mb-1 text-center" style={{color: "var(--color-text)"}}>Page not found</h1>
+        <p className="text-center" style={{color: "var(--text-secondary-color)"}}>The page you are looking for does not exist.</p>
+        <div className="grid mt-4 flex justify-content-center">
+          <Button label="Back" icon="material-symbols-outlined mat-icon-back" onClick={goBack} />
+          <Button label="Dashboard" icon="material-symbols-outlined mat-icon-back" onClick={goToDashboard} link />
+        </div>
+      </div>
     </div>
   );
 };

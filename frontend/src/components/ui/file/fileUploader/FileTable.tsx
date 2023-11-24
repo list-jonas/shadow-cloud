@@ -66,7 +66,8 @@ const FileTable: React.FC<FileTableProps> = (props) => {
 
   const actionBodyTemplate = (rowData: File) => {
     if (props.state === FileTableState.REMOVE) {
-      return <Button onClick={() => removeFile(rowData)} icon="material-symbols-outlined mat-icon-bin" disabled={actionDisabled} />;
+      return <Button onClick={() => removeFile(rowData)} icon="material-symbols-outlined mat-icon-bin" disabled={actionDisabled}
+                     tooltip="Remove" tooltipOptions={{ position: 'bottom' }} />;
     }
     if (props.state === FileTableState.DOWNLOAD) {
       if (!downloadFile) {
@@ -78,7 +79,8 @@ const FileTable: React.FC<FileTableProps> = (props) => {
       }
       
       // @ts-ignore
-      return <Button onClick={() => downloadFile(rowData.id)} icon="material-symbols-outlined mat-icon-download" disabled={actionDisabled} />;
+      return <Button onClick={() => downloadFile(rowData.id)} icon="material-symbols-outlined mat-icon-download" disabled={actionDisabled}
+                     tooltip="Download" tooltipOptions={{ position: 'bottom' }} />;
     }
     
     return null;

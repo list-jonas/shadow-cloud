@@ -12,6 +12,7 @@ import redirectTo from "../../../../helper/redirectTo";
 import { ContextMenu } from "primereact/contextmenu";
 import { useToast } from "../../../../hooks/ToastHook";
 import DateTimeChips from "../../DateTimeChips/DateTimeChips";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 
 interface UploadedFilesProps {
   fileUploadCount?: number;
@@ -72,20 +73,38 @@ const UploadedFiles: React.FC<UploadedFilesProps> = (props) => {
         // @ts-ignore
         cm.current?.hide();
 
-        axios.delete(apiRoutes.deleteUpload + `/${selectedUpload!.id}`, { withCredentials: true })
-          .then(res => {
-            setUploads(uploads.filter(upload => upload.id !== selectedUpload!.id))
-            
-            showSuccess('Success', res.data.message);
-          })
-          .catch(err => {
-            if (err.response.data.error) {
-              showError('Error', err.response.data.error);
-            }
-          })
+        confirmDeletion();
       }
     }
   ];
+
+  const confirmDeletion = () => {
+    confirmDialog({
+        message: 'Do you want to delete this upload?',
+        header: 'Delete Confirmation',
+        icon: 'material-symbols-outlined mat-icon-info',
+        acceptClassName: 'p-button-danger',
+        accept: acceptDeletion,
+        reject: () => {}
+    });
+  };
+
+  const acceptDeletion = () => {
+    // @ts-ignore
+    cm.current?.hide();
+
+    axios.delete(apiRoutes.deleteUpload + `/${selectedUpload!.id}`, { withCredentials: true })
+      .then(res => {
+        setUploads(uploads.filter(upload => upload.id !== selectedUpload!.id))
+        
+        showSuccess('Success', res.data.message);
+      })
+      .catch(err => {
+        if (err.response.data.error) {
+          showError('Error', err.response.data.error);
+        }
+      })
+  }
 
   const nameBodyTemplate = (rowData: IUpload) => {
     return <a href={`/file/${rowData.path}`} onClick={(e) => redirectTo(navigate, e, `/file/${rowData.path}`)}>{rowData.name}</a>;
@@ -101,6 +120,7 @@ const UploadedFiles: React.FC<UploadedFilesProps> = (props) => {
   
   return (
     <div>
+      <ConfirmDialog />
       <DataTable
         value={uploads}
         size="small"
@@ -122,10 +142,10 @@ const UploadedFiles: React.FC<UploadedFilesProps> = (props) => {
         emptyMessage="No uploads found"
       >
         <Column field="name" header="Name" body={nameBodyTemplate} sortable />
-        <Column field="createdAt" body={createdAtBodyTemplate} header="Uploaded" sortable />
+        <Column field="createdAt" body={createdAtBodyTemplate} header="Uploaded" sortable headerStyle={{minWidth: "190px"}} />
         <Column field="downloadCount" header="Downloads" sortable />
         <Column field="views" header="Views" sortable />
-        <Column field="size" header="Size" body={sizeBodyTemplate} sortable sortFunction={sizeSorter} />
+        <Column field="size" header="Size" body={sizeBodyTemplate} sortable sortFunction={sizeSorter} headerStyle={{minWidth: "80px"}} />
       </DataTable>
 
       <ContextMenu model={contextMenuItems} ref={cm} />

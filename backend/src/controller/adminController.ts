@@ -69,7 +69,7 @@ export const addUser = async (req: Request, res: Response) => {
     // Create a new login for the user
     await prisma.user.create({
       data: {
-        email: email,
+        email: (email as string).toLocaleLowerCase(),
         name: name,
         password: hashedPassword,
         maxSpace: maxSpace,
@@ -99,7 +99,7 @@ export const editUser = async (req: Request, res: Response) => {
       where: { id },
       data: {
         name: req.body.name,
-        email: req.body.email,
+        email: (req.body.email as string).toLocaleLowerCase(),
         maxSpace: parseInt(req.body.maxSpace) / 1000,
         role: req.body.role,
         updatedAt: new Date(),
