@@ -33,11 +33,11 @@ const FileUploader: React.FC<FileUploaderProps> = (props) => {
     let _validFiles: File[] = [];
     let _invalidFiles: File[] = [];
   
-    // Files should have less than 1GB in size and should not exist in files array already
+    // Files should have less than 10GB in size and should not exist in files array already
     if (_files.length > 0) {
       _files.forEach((file) => {
-        if (file.size > 1000000000) {
-          showError('Error', `File size of ${file.name} should be less than 1GB`)
+        if (file.size > 10000000000) {
+          showError('Error', `File size of ${file.name} should be less than 10GB`)
           _invalidFiles.push(file);
           return;
         }
